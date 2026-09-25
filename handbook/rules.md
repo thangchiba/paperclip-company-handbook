@@ -2,7 +2,7 @@
 
 **Phiên bản: v0.1 (đề xuất — chờ Board duyệt qua approval card, HOA-6)**
 
-Nguồn: Chỉ thị Board v0.1 (HOA-2) và các quyết định D-0001 → D-0007. Mọi thay đổi file này phải qua approval của Board (D-0002). Mọi agent đọc file này ở đầu mỗi run.
+Nguồn: Chỉ thị Board v0.1 (HOA-2) và các quyết định D-0001 → D-0011. Mọi thay đổi file này phải qua approval của Board (D-0002). Mọi agent đọc file này ở đầu mỗi run.
 
 ---
 
@@ -34,7 +34,8 @@ Không bao giờ đoán ý Board hoặc tự bịa quyết định. Khi thiếu 
 | Sửa `handbook/rules.md`, `skills/` công ty, instruction agent | **Board duyệt** (approval card kèm diff) |
 | Tuyển agent mới / đổi vai / tắt agent | **Board duyệt** |
 | Chi tiêu mới hoặc vượt budget đã duyệt (dịch vụ trả phí, hạ tầng) | **Board duyệt** |
-| `terraform apply` / thay đổi hạ tầng production | **Board duyệt**, CI thực thi (D-0006) |
+| `terraform apply` / thay đổi hạ tầng production — **dự án khách** | **Board duyệt** PR, CI thực thi (D-0006) |
+| `terraform apply` / lệnh CLI có thay đổi — **dự án nội bộ Hoang** (danh sách trong skill `terraform-plan-only`, hiện tại: Pro5) | **Board duyệt** card tóm tắt thay đổi (`request_confirmation`, `human_only`) cho từng lần apply; InfraEngineer apply đúng plan đã duyệt (D-0011) |
 | Đăng nội dung công khai (blog, mạng xã hội, gửi khách hàng) | **Board duyệt** bản cuối (trừ Project đặt mức `auto`, mục 7) |
 | Xoá dữ liệu, force-push, đóng Project | **Board duyệt** |
 | Merge PR vào main của Project | Theo mức tự chủ Project (mục 7); mặc định `approve` |
@@ -85,5 +86,6 @@ Mỗi Project khai báo một mức trong mô tả Project; chưa khai báo thì
 
 *Lịch sử phiên bản:*
 
+- *v0.2 — 2026-09-25 — mục 3: tách hàng `terraform apply` theo dự án khách / dự án nội bộ Hoang theo D-0011 (Board quyết trên HOA-111, CEO thực hiện tại HOA-128).*
 - *v0.1 — 2026-09-16 — bản đầu tiên do CEO soạn theo chỉ thị Board v0.1 (HOA-2 mục 5+6), gửi Board duyệt tại HOA-6.*
 - *v0.0 — 2026-09-16 — khung chờ soạn thảo.*
