@@ -2,7 +2,7 @@
 
 **Phiên bản: v0.1 (đề xuất — chờ Board duyệt qua approval card, HOA-6)**
 
-Nguồn: Chỉ thị Board v0.1 (HOA-2) và các quyết định D-0001 → D-0011. Mọi thay đổi file này phải qua approval của Board (D-0002). Mọi agent đọc file này ở đầu mỗi run.
+Nguồn: Chỉ thị Board v0.1 (HOA-2) và các quyết định D-0001 → D-0012. Mọi thay đổi file này phải qua approval của Board (D-0002). Mọi agent đọc file này ở đầu mỗi run.
 
 ---
 
@@ -45,7 +45,7 @@ Ngoài phạm vi bảng trên: tự quyết và báo cáo (D-0001). Nghi ngờ t
 
 ## 4. Secret và dữ liệu khách
 
-1. **Không có giá trị secret trong Paperclip, prompt, comment, document, log hay commit.** Secret nằm trong profile/secret manager trên máy chủ theo từng khách; agent chỉ tham chiếu **tên** biến (D-0005).
+1. **Không có giá trị secret trong Paperclip, prompt, comment, document, log hay commit.** Secret nằm trong profile/secret manager trên máy chủ theo từng khách; agent chỉ tham chiếu **tên** biến (D-0005). Riêng AWS: agent chỉ dùng credential Paperclip inject vào env của run, không dùng profile trên máy chủ (D-0012).
 2. Nhận được credential → propose làm Paperclip secret ngay qua kênh secret-proposal, không dán ra bất kỳ đâu.
 3. **NDA giữa các Project (D-0004):** không mang thông tin, code, tên khách hàng từ Project này sang Project khác. Task luôn thuộc đúng một Project. Kiến thức dự án ghi vào `docs/` của repo đó qua PR, không giữ trong bộ nhớ agent.
 4. Phát hiện lộ secret → báo Board ngay + đề xuất rotate.
@@ -86,6 +86,7 @@ Mỗi Project khai báo một mức trong mô tả Project; chưa khai báo thì
 
 *Lịch sử phiên bản:*
 
+- *v0.3 — 2026-09-28 — mục 4.1: AWS chỉ dùng credential Paperclip inject vào env, không dùng profile trên máy chủ, theo D-0012 (Board quyết trên HOA-196, CTO thực hiện tại HOA-196).*
 - *v0.2 — 2026-09-25 — mục 3: tách hàng `terraform apply` theo dự án khách / dự án nội bộ Hoang theo D-0011 (Board quyết trên HOA-111, CEO thực hiện tại HOA-128).*
 - *v0.1 — 2026-09-16 — bản đầu tiên do CEO soạn theo chỉ thị Board v0.1 (HOA-2 mục 5+6), gửi Board duyệt tại HOA-6.*
 - *v0.0 — 2026-09-16 — khung chờ soạn thảo.*

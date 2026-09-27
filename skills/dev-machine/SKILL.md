@@ -59,5 +59,14 @@ Alternatively run the build entirely on the machine inside WSL after cloning the
 
 - Never open TCP 2375 or weaken SSH config on this machine.
 - Do not store secrets in files on the dev machine; use env vars scoped to the session or Paperclip secrets.
+- **AWS (D-0012):** run AWS commands on the host your run executes on, not over SSH here. Never use any AWS profile or `~/.aws` file on this machine. If a task really needs AWS here, send the credential over stdin only, never inside the script file or on the ssh command line. `bash -ls` (login shell) puts `~/.local/bin/aws` on `PATH`:
+
+  ```bash
+  { printf 'export AWS_ACCESS_KEY_ID=%q AWS_SECRET_ACCESS_KEY=%q AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null\n' \
+      "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"; cat script.sh; } \
+    | ssh thang@192.168.1.111 'wsl -e bash -ls'
+  ```
+
+  If your env has `THANGCHIBA_AWS_ACCESS_KEY`/`THANGCHIBA_AWS_SECRET_ACCESS_KEY` instead, pass those two to `printf`.
 - Clean up large temporary artifacts (dangling images, build caches) if a build fails repeatedly: `docker system df` before `docker builder prune`.
 - If the machine is offline and the task is urgent, proceed locally and mention the fallback in the issue comment. Do not ask a human to power it on unless the task explicitly requires that machine.
