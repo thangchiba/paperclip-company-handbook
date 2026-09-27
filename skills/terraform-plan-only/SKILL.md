@@ -18,7 +18,8 @@ Chỉ Board mới thêm dự án vào danh sách "nội bộ" (sửa file này q
 
 ## Quy tắc chung (mọi dự án)
 
-- **Kiểm tra env trước:** Project phải có biến môi trường khai báo (`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` hoặc `AWS_PROFILE`, `AWS_DEFAULT_REGION`, backend/workspace, tên môi trường — theo D-0005). Thiếu env → dừng, gắn `needs-decision`, không chạy lệnh nào. Chạy `aws sts get-caller-identity` để chắc đang ở đúng tài khoản trước mọi lệnh có thay đổi.
+- **Kiểm tra env trước:** Project phải có biến môi trường khai báo (`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` do Paperclip inject, `AWS_DEFAULT_REGION`, backend/workspace, tên môi trường — theo D-0005, D-0012). Thiếu env → dừng, gắn `needs-decision`, không chạy lệnh nào. Chạy `aws sts get-caller-identity` để chắc đang ở đúng tài khoản trước mọi lệnh có thay đổi.
+- **Chỉ dùng AWS credential trong env (D-0012, rule HOA-196 trong `AGENTS.md`):** mọi lệnh AWS CLI/SDK/Terraform chạy kèm `AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null`. Không dùng `--profile`, `AWS_PROFILE`, file trong `~/.aws`, hay `profile`/`shared_credentials_files` trong provider/backend Terraform, trên bất kỳ máy nào. Không ghi credential ra file. `sts get-caller-identity` ra principal khác principal được cấp (nhất là `:root`) → dừng, báo cáo.
 - **Luôn được phép:** `terraform init` (backend đã khai báo), `terraform validate`, `terraform plan`, `terraform show`, các lệnh AWS CLI **chỉ đọc** (`describe-*`, `list-*`, `get-*`, `sts get-caller-identity`), mở PR kèm output plan (đã che giá trị nhạy cảm).
 - **Không bao giờ** in/log/commit giá trị secret; chỉ tham chiếu tên biến. Output plan/apply dán lên PR hoặc issue phải che access key, password, token, connection string. Phát hiện lộ secret → báo ngay + đề xuất rotate.
 - Không thao tác lên tài nguyên thuộc dự án khác (NDA D-0004), kể cả khi credential hiện tại nhìn thấy được.
