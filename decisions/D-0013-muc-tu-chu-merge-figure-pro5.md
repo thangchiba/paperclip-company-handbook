@@ -39,7 +39,7 @@ Pro5:
 
 Theo đề xuất của CTO trên HOA-207. Hai điểm này chỉ làm chặt thêm, không nới điều kiện Board chọn:
 
-- "Người viết" là agent được giao issue Paperclip của PR. Mọi agent push bằng cùng tài khoản GitHub `thangchiba`, nên GitHub không phân biệt được.
+- "Người viết" xác định theo Paperclip, không theo GitHub: mọi agent push bằng cùng tài khoản `thangchiba`, nên GitHub không phân biệt được. Người viết là agent đã làm issue Paperclip của PR và push commit, xem theo lịch sử issue (lúc review, issue có thể đã chuyển cho reviewer).
 - Reviewer tự push commit sửa vào PR thì thành đồng tác giả. Người viết gốc hoặc một agent thứ ba phải xem các commit đó trước khi merge.
 
 ## Hệ quả
