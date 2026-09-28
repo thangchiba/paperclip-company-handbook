@@ -4,6 +4,7 @@
 - **Phạm vi:** Project Figure (repo `thangchiba/odeku`) và Project Pro5 (repo `thangchiba/pro5`)
 - **Nguồn:** Board trả lời card trên HOA-211; CTO đề xuất trên HOA-207; CEO thực hiện tại HOA-211
 - **Sửa đổi:** Không. Đây là khai báo mức tự chủ theo `handbook/rules.md` mục 7.
+- **Cập nhật:** 2026-09-28, Pro5: lần deploy do merge kéo theo tính vào mức `auto`, tới trước launch M1 (Board trả lời card trên HOA-216). Xem mục "Cập nhật 2026-09-28".
 
 ## Bối cảnh
 
@@ -30,10 +31,10 @@ Pro5:
    - b. Kiểm tra xanh. Figure: `scripts/verify.sh` PASS trên head của PR (odeku không có CI). Pro5: mọi check trên PR xanh (gồm `plan` khi PR chạm `infra/**`).
    - c. GitGuardian xanh.
 2. **Vẫn cần Board duyệt, không đổi:**
-   - Deploy production, đăng nội dung công khai, gửi khách hàng.
+   - Deploy production, đăng nội dung công khai, gửi khách hàng. Riêng Pro5: lần deploy do merge kéo theo tính vào mức `auto`, tới trước launch M1 (mục "Cập nhật 2026-09-28").
    - Mọi hàng "Board duyệt" cứng ở rules.md mục 3, kể cả sửa file hướng dẫn agent trong repo (`SISYO.md`, `CLAUDE.md`). PR chạm các phần này vẫn cần card Board riêng (vd odeku #9).
    - Pro5: apply hạ tầng theo D-0011 (Board duyệt từng lần apply). Merge PR `infra/**` không apply gì.
-3. **Merge không kéo theo deploy.** Mức `auto` dựa trên thực tế lúc quyết: merge không deploy (odeku không có GitHub Actions; Pro5 chỉ có CI chạy `plan`). Vì deploy production vẫn cần Board duyệt, PR nào làm merge tự deploy production (vd cài `.github/workflows/app-deploy.yml` của Pro5, hoặc thêm workflow deploy cho odeku) thì cần card Board, và CEO hỏi lại Board mức merge của Project đó trước khi cài.
+3. **Merge không kéo theo deploy.** Mức `auto` dựa trên thực tế lúc quyết: merge không deploy (odeku không có GitHub Actions; Pro5 chỉ có CI chạy `plan`). Vì deploy production vẫn cần Board duyệt, PR nào làm merge tự deploy production (vd cài `.github/workflows/app-deploy.yml` của Pro5, hoặc thêm workflow deploy cho odeku) thì cần card Board, và CEO hỏi lại Board mức merge của Project đó trước khi cài. Pro5 đã hỏi lại trên HOA-216, xem mục "Cập nhật 2026-09-28".
 
 ## Cách áp dụng điều kiện a
 
@@ -47,3 +48,31 @@ Theo đề xuất của CTO trên HOA-207. Hai điểm này chỉ làm chặt th
 - Mô tả Project Figure và Pro5 trên Paperclip ghi mức theo quyết định này.
 - CTO được báo trên HOA-207: các PR odeku đang chờ merge theo mức mới khi đủ điều kiện.
 - `handbook/rules.md` không đổi: mục 7 đã cho mỗi Project tự khai báo mức. Nếu thêm Project dùng cùng mẫu (merge `auto`; deploy, nội dung, khách hàng `approve`), CEO đề xuất đưa mẫu này vào mục 7 ở buổi rà soát Chủ nhật (D-0002).
+
+## Cập nhật 2026-09-28 — Pro5: merge kéo theo deploy (HOA-216)
+
+- **Nguồn:** Board trả lời card trên HOA-216; CTO nhắc trên HOA-208 sau khi merge pro5 #8; CEO thực hiện tại HOA-216.
+
+### Bối cảnh
+
+Bước 3 của HOA-135 chép `ci/app-deploy.yml` vào `.github/workflows/`. Từ đó mỗi push vào `main` của `thangchiba/pro5` tự deploy production, trừ push chỉ sửa `infra/**` hoặc `*.md`. Workflow có sẵn trigger chạy tay (`workflow_dispatch`); agent chỉ đọc được Actions, không tự chạy hay sửa được file workflow. Theo mục 3 ở trên, CEO hỏi lại Board trước khi cài. Lúc hỏi, prod chưa có user thật: Stripe dùng test key, SES còn sandbox, site đang `noindex`.
+
+### Phương án đã cân nhắc
+
+- A: giữ deploy theo push, merge = deploy, tới trước launch M1. Board chọn.
+- B: bỏ trigger `push`, chỉ deploy bằng tay: agent báo SHA, Board bấm chạy `app-deploy` trên `main`. CEO đề xuất.
+- C: giữ deploy theo push, Board duyệt từng PR code app bằng card.
+
+### Quyết định
+
+- **Pro5 cài `app-deploy` như hiện có**, không sửa trigger.
+- **Mức `auto` của Pro5 tính luôn lần deploy production mà merge kéo theo.** Điều kiện merge vẫn là a–c của mục 1 ở trên; không thêm card cho PR code app. Kiểm soát bù: CTO review mọi PR, và mỗi lần deploy có email cảnh báo (HOA-148). Rủi ro Board chấp nhận: PR code app nào merge cũng lên prod ngay, Board không xem trước.
+- **Chỉ tới trước launch M1.** Trước khi bỏ `noindex` (HOA-194), Pro5 chuyển sang phương án B. Từ đó merge không deploy nữa, và deploy production lại cần Board duyệt như mục 2 ở trên.
+- **Không đổi:** Figure vẫn theo mục 3 ở trên (câu hỏi tương tự ở HOA-215). Với Pro5, phần còn lại của mục 2 ở trên giữ nguyên, kể cả apply hạ tầng theo D-0011.
+
+### Hệ quả
+
+- Mô tả Project Pro5 trên Paperclip ghi mức mới.
+- Bước 3 của HOA-135 làm theo mô tả hiện có, không chờ PR sửa workflow.
+- HOA-194 (go-live M1) có thêm bước chuyển sang phương án B, làm trước khi bỏ `noindex`.
+- CTO được báo trên HOA-216.
