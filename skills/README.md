@@ -6,6 +6,7 @@ Nguồn sự thật của skill dùng chung theo vai (D-0005). Sau khi Board duy
 |---|---|
 | `verify-and-report` | Mọi agent |
 | `needs-decision-protocol` | Mọi agent |
+| `secret-hygiene` | Mọi agent (HOA-177: cấm cả "hình dạng secret" trong git, tự quét trước commit) |
 | `pr-standard` | Agent dev (FullstackDev, InfraEngineer…) |
 | `terraform-plan-only` | InfraEngineer |
 | `content-draft-protocol` | Agent nội dung/marketing |
