@@ -11,5 +11,6 @@ Nguồn sự thật của skill dùng chung theo vai (D-0005). Sau khi Board duy
 | `terraform-plan-only` | InfraEngineer |
 | `content-draft-protocol` | Agent nội dung/marketing |
 | `daily-brief` | Thư ký (Chief of Staff) |
+| `hoang-auth` | CTO (tạo client, D-0018), agent dev (FullstackDev, InfraEngineer) khi dự án cần đăng nhập (D-0016) |
 
 Skill tầng project nằm trong `.claude/skills` của repo từng Project, không copy vào đây (D-0005).
