@@ -53,9 +53,16 @@ printf '%s\n' "$d" | grep -inE '(password|passwd|secret|token|api_key|private_ke
 
 ## 4. Không in secret ra log / chat / Paperclip
 
-- Không chạy `env`, `printenv`, `set`, `export -p`, `cat /proc/*/environ`, không `echo $SSH_ORIGINAL_COMMAND`
+- Không chạy `env`, `printenv`, `set`, `export -p`, `cat /proc/*/environ`, `ps -E`/`ps e`, không `echo $SSH_ORIGINAL_COMMAND`
   (HOA-130/136: biến này chứa credential AWS/GitHub/Paperclip dạng plaintext). Cần biết biến nào tồn tại:
   `env | sed 's/=.*/=<set>/'`.
+- Không in dòng lệnh (argv) của tiến trình: cấm `ps -ef`, `ps aux`, `ps -o args|cmd|command`, `pgrep -a`/`-l`,
+  `pstree -a`, `top -c`/`htop`, `/proc/*/cmdline` (HOA-312: argv của launcher từng giữ mọi secret của run, và
+  mọi tiến trình trên máy đọc được argv). Kiểm tiến trình: `ps -o pid,etime,comm` hoặc
+  `pgrep -f <pattern> >/dev/null && echo running`.
+- Quét secret trong file/log: chỉ in **số đếm hoặc true/false**, không in đoạn khớp hay ngữ cảnh quanh nó; bỏ qua
+  kho credential (`~/.claude/.credentials.json`, `~/.ssh`, `~/.aws`). So khớp bằng giá trị đọc từ env bên trong
+  script (Python, hoặc `grep -F -f <(printf '%s' "$VAR")`), không đưa giá trị secret vào argv của `grep`/`curl`.
 - Khi in file cấu hình, connection string, header HTTP hay output `docker compose config`: mask trước
   (`sed -E 's#(://[^:@/]+:)[^@]+@#\1<masked>@#g'`).
 - Comment/document trên Paperclip chỉ ghi **tên** biến, path của secret file, incident id — không bao giờ ghi giá trị.
