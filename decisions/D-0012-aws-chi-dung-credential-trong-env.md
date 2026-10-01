@@ -25,7 +25,7 @@ Chọn B:
 2. Không dùng `--profile`, `AWS_PROFILE`, file trong `~/.aws`, hay `profile`/`shared_credentials_files` trong Terraform, trên bất kỳ máy nào. Profile có sẵn trên máy chủ không phải credential của agent: không đọc, không chép, không dùng.
 3. Không ghi credential ra file, không in ra log. Chạy lệnh AWS trên máy của run; phải chạy trên dev machine thì chỉ truyền key qua stdin (xem `skills/dev-machine`).
 4. Lệnh AWS đầu tiên của mỗi run: `sts get-caller-identity` phải ra đúng principal được cấp. Khác (nhất là `:root`) → dừng, báo cáo.
-5. Không có credential trong env, hoặc credential lỗi → dừng, báo trên issue, không đi tìm credential khác.
+5. Không có credential trong env, hoặc credential lỗi → dừng, báo trên issue, không đi tìm credential khác. *(Sửa bởi D-0017: chỉ áp dụng khi task cần chạy lệnh AWS. Task không chạy lệnh AWS nào thì không cần binding, và thiếu binding không chặn task đó.)*
 
 ## Hệ quả
 
