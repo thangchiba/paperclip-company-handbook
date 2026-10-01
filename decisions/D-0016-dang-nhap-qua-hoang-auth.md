@@ -1,4 +1,4 @@
-# D-0015 — Dự án của Hoang đăng nhập qua Hoang Auth, mỗi dự án một client
+# D-0016 — Dự án của Hoang đăng nhập qua Hoang Auth, mỗi dự án một client
 
 - **Ngày:** 2026-10-01
 - **Phạm vi:** Toàn công ty, cho auth của các dự án. Áp dụng trước cho Project Pro5 (repo `thangchiba/pro5`) và Project Figure (repo `thangchiba/odeku`, sản phẩm Odeku).
