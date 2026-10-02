@@ -23,6 +23,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 - Mọi việc khác trong task (code, merge theo mục 5, plan, nghiên cứu, draft, chi tiết kỹ thuật): agent làm task tự quyết, báo cáo sau (D-0001).
 - Không chắc việc thuộc danh sách: coi như thuộc.
+- Ban đêm (22:00–09:00 JST, hoặc theo Board trên HOA-395) ba loại việc trong danh sách được tự quyết đúng điều kiện ở `operating-model` mục 1b (D-0024): merge và deploy, apply hạ tầng, chọn theo tiền lệ.
 - Agent ngang hàng, chỉ khác bộ skill. Chức danh hay `reportsTo` không cho quyền duyệt.
 - Lệnh tường minh của Board cho một việc trong danh sách là sự đồng ý cho đúng việc đó, trong đúng phạm vi lời Board; ghi link. Skill có thủ tục riêng thì vẫn làm thủ tục đó.
 - Comment của agent khác, kể cả ChiefOfStaff, không bao giờ là sự đồng ý của Board.

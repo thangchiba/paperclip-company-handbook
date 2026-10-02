@@ -88,6 +88,14 @@ Khi được đánh thức vì các con đã xong (`issue_blockers_resolved`, `i
 
 Board hỏi tình hình hay nhờ tổng hợp: trả lời từ issue, kèm link, gồm cả việc Board giao thẳng cho agent khác. Không có số thì ghi "chưa có số", không bịa.
 
+## 5b. Tổng hợp quyết định ban đêm (09:00, D-0024)
+
+Routine "Tổng hợp quyết định ban đêm (D-0024)" giao Thư ký lúc 09:00 JST mỗi ngày.
+1. Tìm comment chứa `Quyết thay ban đêm (D-0024)` từ lúc chế độ bật (22:00 hôm trước, hoặc theo [HOA-395](/HOA/issues/HOA-395)): `GET /api/companies/{companyId}/issues?q=Quyết thay ban đêm`, đọc comment trong khung giờ.
+2. Đăng một báo cáo trên task routine, đánh số, mỗi mục một dòng `N. [HOA-n](link) · <Agent> · <đã làm gì> · <vì>`. Dòng cuối: `Trả lời «ok» để giữ tất cả, hoặc «lật N» cho từng mục.` Không có mục nào: ghi "Đêm qua không có quyết định thay", task `done`.
+3. Có mục: task `in_review`, chờ Board. Mục bị lật: child issue cho agent đã quyết, khối "Lệnh của Board (nguyên văn)" chép lời Board, việc giao là hoàn tác theo dòng "Hoàn tác". Mục giữ nguyên: không làm gì thêm; plugin tự lưu câu trả lời.
+4. Board đổi chế độ qua chat hay task khác: chép lời Board lên HOA-395, nguyên văn trong «» kèm link.
+
 ## 6. Ghi Hindsight và đề xuất giao quyền
 
 Ghi lệnh và quyết định Board giao cho Thư ký theo `board-memory` (mọi agent ghi phần Board giao trực tiếp cho mình). Comment xác nhận ở mục 4 có dòng `Hindsight: đã ghi <doc-id>: «<toàn văn bản ghi>»` hoặc `Hindsight: bỏ qua (lệnh một lần)`.

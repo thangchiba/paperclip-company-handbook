@@ -5,7 +5,7 @@ description: Cách Hoang LLC vận hành - tổ chức (agent ngang hàng, khác
 
 # operating-model
 
-Áp dụng cho mọi agent (D-0001, D-0003, D-0010, D-0021, D-0022). Việc Board quyết và quy tắc an toàn: `security-baseline`. Báo cáo, Definition of Done: `concise-status-report`.
+Áp dụng cho mọi agent (D-0001, D-0003, D-0010, D-0021, D-0022, D-0024). Việc Board quyết và quy tắc an toàn: `security-baseline`. Báo cáo, Definition of Done: `concise-status-report`.
 
 ## 0. Tổ chức
 
@@ -38,6 +38,22 @@ Board (chủ công ty) là người quyết duy nhất. Các agent ngang hàng, 
 | Lệnh cần một việc Board quyết mà lời Board không nói rõ | Làm phần chuẩn bị, hỏi Board trước khi làm việc đó. |
 | Có quyết định cũ cùng trường hợp | Áp dụng, ghi nguồn (mục 2). Không hỏi lại. |
 | Chỉ có xu hướng từ quyết định cũ | Không tự làm. Đưa vào card hỏi Board làm phương án đề xuất, kèm nguồn. |
+
+## 1b. Chế độ tự quyết ban đêm (D-0024)
+
+Bật từ 22:00 tới 09:00 JST mỗi ngày, trừ khi comment mới nhất của Board trên [HOA-395](/HOA/issues/HOA-395) nói khác (bật hay tắt tới một giờ, hoặc «về mặc định»). Thư ký chép lên đó lời Board từ chat, nguyên văn trong «» kèm link; chỉ dòng có link tới lời Board mới tính. Đọc `GET /api/issues/HOA-395/comments` trước khi gửi card cho một việc dưới đây.
+
+Khi chế độ bật, agent tự quyết và làm luôn ba loại việc sau thay vì gửi card, kể cả khi việc thuộc `security-baseline` mục 1:
+1. **Merge PR và deploy:** CI hoặc `verify.sh` xanh; revert rồi deploy lại là hoàn tác được; không có migration xoá hay đổi dữ liệu không quay lại được; không đụng secret, auth, phân quyền; không thêm dịch vụ trả phí. PR quan trọng vẫn mở theo `pr-standard`; merge xong để Board xem sau.
+2. **Apply hạ tầng:** plan 0 destroy; không nới IAM, security group, WAF hay quy tắc chặn; dự báo chi phí thêm của dự án vẫn dưới $30/tháng; đúng thủ tục `terraform-plan-only` (lưu plan file, apply đúng file đó).
+3. **Chọn phương án theo tiền lệ:** câu hỏi sản phẩm, nội dung hay kỹ thuật có ít nhất 2 quyết định cũ của Board cùng hướng (mở link thấy đúng), và không gửi hay đăng gì ra ngoài công ty.
+
+Vẫn chờ Board, kể cả ban đêm: chi tiền hay dịch vụ trả phí ngoài mức trên; xoá dữ liệu production, `destroy`, force-push; làm yếu bảo mật; gửi hay đăng ra ngoài công ty; sửa agent, rules, skills, instruction; việc không hoàn tác được; việc chỉ Board làm tay được. Chuẩn bị sẵn, gửi card theo mục 3, rồi làm việc khác. Không chắc việc có đạt điều kiện: coi như không đạt.
+
+Khi tự quyết, comment trên task đúng một dòng:
+`Quyết thay ban đêm (D-0024): <đã làm gì> — vì <«lời Board» link1, link2 | điều kiện nào đạt>. Hoàn tác: <cách>.`
+
+09:00 Thư ký tổng hợp các dòng đó cho Board (`order-dispatch` mục 5b). Board lật lại mục nào thì agent đã quyết hoàn tác theo dòng "Hoàn tác". Câu trả lời của Board thành tiền lệ; loại việc Board giữ nguyên 3 lần thì Thư ký đề xuất giao quyền hẳn (`order-dispatch` mục 6).
 
 Nguồn mâu thuẫn thì theo thứ tự: lời mới nhất của Board trên task; `decisions/` và `handbook/rules.md`; Hindsight `kind:board-*`; ký ức khác. Vẫn mâu thuẫn thì hỏi Board.
 
