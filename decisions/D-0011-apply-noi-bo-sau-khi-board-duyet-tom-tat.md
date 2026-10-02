@@ -5,6 +5,8 @@
 - **Nguồn:** Board trả lời card trên HOA-111 (Pro5 hạ tầng); CEO thực hiện tại HOA-128
 - **Sửa đổi:** D-0006 (thêm ngoại lệ cho dự án nội bộ; dự án khách giữ nguyên)
 
+*(Sửa bởi D-0021 mục 12: Pro5, tới launch M1, thay đổi hạ tầng mà dự báo chi AWS của Pro5 vẫn dưới $30/tháng và không ảnh hưởng security thì không cần card Board; còn lại giữ nguyên.)*
+
 ## Bối cảnh
 
 D-0006 cấm tuyệt đối agent `terraform apply` và mọi thay đổi qua CLI; apply chỉ do CI chạy sau khi Board duyệt PR. Pro5 là sản phẩm nội bộ của Hoang, chưa có CI/pipeline hạ tầng, và cần InfraEngineer tự tạo AWS Organization/member account rồi bootstrap. Với quy tắc cũ, InfraEngineer bị kẹt dù Board đã chọn phương án.

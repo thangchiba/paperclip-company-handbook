@@ -1,17 +1,14 @@
 # Company Handbook — Hoang LLC
 
-Bộ nhớ quyết định và quy tắc vận hành của công ty. Nguồn sự thật cho mọi agent.
+Quyết định và quy tắc vận hành của công ty. Nguồn sự thật cho mọi agent.
 
 ## Cấu trúc
 
-- `decisions/D-xxxx-<slug>.md` — mỗi quyết định của Board một file: bối cảnh, phương án đã cân nhắc, quyết định, ngày, phạm vi áp dụng.
-- `handbook/rules.md` — bộ quy tắc hiện hành, có số phiên bản. Mọi agent đọc file này ở đầu mỗi run.
-- `playbooks/` — quy trình lặp lại (release, onboarding project mới, xử lý sự cố, đăng nội dung).
-- `skills/` — nguồn sự thật của các skill dùng chung theo vai (dạng SKILL.md), import vào thư viện Paperclip.
+- `decisions/D-xxxx-<slug>.md`: mỗi quyết định của Board áp dụng rộng hơn một task là một file (bối cảnh, phương án, quyết định, ngày, phạm vi). Thư ký (ThuKy) ghi trong ngày theo `order-dispatch` mục 7 (D-0002).
+- `handbook/rules.md`: quy tắc hiện hành, có số phiên bản; chỉ tới skill chứa từng quy tắc.
+- `skills/`: nguồn của skill dùng chung, import vào thư viện Paperclip (`skills/README.md`).
+- `playbooks/`: quy trình lặp lại.
 
-## Vòng lặp bắt buộc (theo D-0002)
+## Tổ chức
 
-1. Board quyết → trong cùng ngày ghi `decisions/D-xxxx.md`.
-2. Quyết định có tính khái quát → đề xuất sửa `rules.md`/SKILL.md qua approval card kèm diff. Board duyệt → merge và cập nhật skill trong thư viện Paperclip.
-3. Không sửa rules/skills khi chưa có approval của Board. Không ghi quyết định Board chưa nói.
-4. Tối Chủ nhật: rà lại decisions trong tuần, gộp trùng, đề xuất nâng thành rule.
+Board quyết; các agent ngang hàng, chỉ khác bộ skill (`operating-model` mục 0). Sửa rules, skills hay instruction agent cần Board duyệt.

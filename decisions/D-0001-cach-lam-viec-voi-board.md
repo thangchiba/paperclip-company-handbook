@@ -4,6 +4,8 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 1 (HOA-2)
 
+*(Sửa bởi D-0021: mục 2, thay "một card buổi sáng, một card buổi tối" bằng: mỗi agent hỏi Board bằng card `human_only` trên task của mình, mỗi task tối đa một card đang chờ (`operating-model`); mục 4, tra cả Hindsight.)*
+
 ## Bối cảnh
 
 Giai đoạn khởi động, các agent cần nhiều quyết định từ Board nhưng không được làm phiền lắt nhắt hoặc chặn tiến độ vì chờ trả lời.

@@ -1,25 +1,41 @@
 ---
 name: pr-standard
-description: Chuẩn mở pull request của công ty - branch, commit, mô tả PR, self-review và điều kiện merge theo mức tự chủ Project. Dùng khi thay đổi code bất kỳ repo nào.
+description: Chuẩn branch, commit, PR và merge của công ty - FullstackDev và InfraEngineer tự merge, việc quan trọng thì mở PR cho Board review với mô tả ngắn gọn theo format dưới, kiểm deploy sau merge. Dùng khi thay đổi code ở bất kỳ repo nào.
 ---
 
 # pr-standard
 
-Mọi thay đổi code đi qua PR. Không commit thẳng vào main (trừ repo được Board cho phép rõ ràng).
+Lời Board (2026-10-02, D-0021): «Dev và Infra tự do merge code vào. Chỉ những task quan trọng thì phát hành PR để tôi review. Lưu ý khi phát hành PR cần trình bày ngắn gọn súc tích như format tôi đã yêu cầu lần trước.»
 
-## Quy tắc
+## 1. Branch, commit, PR
 
-1. **Branch:** `feat/<slug>`, `fix/<slug>`, `chore/<slug>` — ngắn, mô tả đúng việc.
-2. **Commit:** message tập trung "vì sao", thêm dòng `Co-Authored-By: Paperclip <noreply@paperclip.ing>`.
-3. **PR description** gồm:
-   - Summary: 1–3 bullet.
-   - Test plan: đã verify bằng gì (lệnh + kết quả).
-   - Link task Paperclip liên quan.
-4. **Self-review trước khi xin review:** đọc lại diff, chạy test/lint, không để file thừa, không secret trong diff.
-5. **Merge theo mức tự chủ Project** (`handbook/rules.md` mục 7): `auto` → tự merge sau khi xanh; `notify` → báo trước, chờ khoảng đệm; `approve` (mặc định) → chờ Board duyệt.
-6. PR nhỏ, một mục đích. Việc lớn → tách nhiều PR theo thứ tự.
+- Branch `feat/<slug>`, `fix/<slug>`, `chore/<slug>`. Không commit thẳng vào `main`, trừ repo Board cho phép rõ ràng.
+- PR nhỏ, một mục đích; việc lớn tách nhiều PR theo thứ tự. Không trộn refactor lớn vào PR sửa bug.
+- Commit message nói "vì sao", thêm dòng `Co-Authored-By: Paperclip <noreply@paperclip.ing>`.
+- Mô tả PR, đọc xong trong 30 giây:
+  - **Summary:** 1–3 bullet.
+  - **Test plan:** lệnh đã chạy + kết quả.
+  - Link task Paperclip.
+- Trước khi merge: đọc lại diff, chạy test/lint/build liên quan (`dev-machine`), không file thừa, không secret trong diff (`secret-hygiene`).
+
+## 2. Merge
+
+- **Việc thường:** FullstackDev và InfraEngineer tự merge PR của mình khi check xanh và GitGuardian xanh. Không cần review của agent khác, không chờ QA.
+  - Figure (odeku, không có CI): check xanh = `scripts/verify.sh` PASS trên head của PR.
+  - Pro5: mọi check trên PR xanh, gồm `plan` khi PR chạm `infra/**`.
+- **Việc quan trọng** (thuộc danh sách `security-baseline` mục 1, kể cả sửa `SISYO.md`/`CLAUDE.md`): không tự merge.
+  1. Mở PR theo format mục 1. Bullet đầu của Summary nêu vì sao cần Board và Board cần xem gì.
+  2. Hỏi Board bằng card `request_confirmation` `human_only` trên task, kèm link PR (`operating-model` mục 3). Mô tả card theo `concise-status-report`.
+  3. Merge sau khi Board chấp nhận card hoặc đồng ý bằng comment. Board yêu cầu sửa: sửa rồi hỏi lại bằng card mới.
+- Không chắc việc có quan trọng không: coi là quan trọng.
+
+## 3. Sau khi merge
+
+- **Figure:** merge vào odeku `main` là deploy production, tới khi có đơn thật (`security-baseline` mục 5). Người merge xem log deploy trên MacbookServer (runbook `docs/06_infra/deploy.md`, SSH theo `security-baseline` mục 7), kiểm `https://neokun.com/healthz` trả `ok` với đúng SHA ngắn của commit merge, rồi báo trên task.
+- **Pro5:** merge vào `main` là deploy production, tới launch M1, trừ PR chỉ sửa `infra/**` hoặc `*.md`. Merge PR `infra/**` không apply gì; apply theo `terraform-plan-only`.
 
 ## Cấm
 
-- Force-push branch chung, skip hook, merge khi CI đỏ.
-- Trộn refactor lớn vào PR fix bug.
+- Merge khi check đỏ hay GitGuardian đỏ; chỉ Board đánh dấu false positive.
+- Force-push branch chung, bỏ qua hook.
+- Merge PR của việc quan trọng khi Board chưa đồng ý.

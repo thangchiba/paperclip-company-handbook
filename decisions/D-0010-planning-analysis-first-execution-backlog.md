@@ -5,6 +5,8 @@
 - **Nguồn:** Chỉ đạo Board tại HOA-36 và xác nhận áp dụng cho Daily brief tại HOA-8
 - **Thay thế:** Phần “Engineer chạy batch ban đêm” và phần tự động dồn thực thi vào ban đêm của D-0009
 
+*(Sửa bởi D-0021: mục 4 hết hiệu lực vì daily brief đã huỷ (card HOA-82); ThuKy báo cáo theo từng lệnh.)*
+
 ## Bối cảnh
 
 Board định hướng lại dàn agent: trọng tâm là lập kế hoạch, phân tích thị trường và tư vấn chuyên môn để các dự án luôn tiến triển. Việc thực thi không tự chạy theo hàng đợi; user sẽ chủ động kéo task về làm hoặc yêu cầu automation khi cần.

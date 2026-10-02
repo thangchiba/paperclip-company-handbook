@@ -4,6 +4,8 @@
 - **Phạm vi:** Toàn công ty (quản lý skill + cấu hình env)
 - **Nguồn:** Chỉ thị Board v0.1, mục 5 (HOA-2)
 
+*(Sửa bởi D-0021: mục 3, danh sách skill và nơi gắn theo `skills/README.md` v0.2.)*
+
 ## Bối cảnh
 
 Skill vừa có loại gắn với một repo cụ thể, vừa có loại dùng chung theo vai. Cần tránh trùng nguồn (một skill hai bản lệch nhau) và tránh secret lọt vào Paperclip.

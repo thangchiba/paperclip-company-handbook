@@ -4,6 +4,8 @@
 - **Phạm vi:** Toàn công ty
 - **Nguồn:** Chỉ thị Board trên HOA-26 (comment 2026-09-17)
 
+*(Sửa bởi D-0021: mục 3, phần ChiefOfStaff hết hiệu lực; ghi chú áp dụng, ThuKy không có `agents:configure`, đổi config agent do Board làm.)*
+
 ## Bối cảnh
 
 Board nhận thấy: (1) mỗi task ban ngày assign lẻ tẻ tạo một run riêng, tốn budget; (2) ProductManager khi được nhờ lên kế hoạch lại nhảy sang code/thực thi ngay; (3) session transcript không phải nơi lưu kiến thức bền.

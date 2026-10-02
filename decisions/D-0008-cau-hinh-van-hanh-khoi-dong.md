@@ -4,6 +4,8 @@
 - **Phạm vi:** Toàn công ty
 - **Nguồn:** Board trả lời card `ask_user_questions` trên HOA-2
 
+*(Sửa bởi D-0021: mục 3 hết hiệu lực; ChiefOfStaff đã bỏ và daily brief đã huỷ (card HOA-82).)*
+
 ## Bối cảnh
 
 CEO gửi 5 câu hỏi cấu hình vận hành (repo handbook, vendor QA, lịch Thư ký, budget, timezone). Board đã trả lời đầy đủ.

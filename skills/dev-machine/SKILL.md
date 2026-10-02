@@ -1,72 +1,35 @@
 ---
 name: dev-machine
-description: Use the Hoang LLC dev machine (192.168.1.111) as the preferred environment for development work. Trigger when cloning a project, setting up a dev environment, running heavy builds/tests, or building Docker images. The machine is powerful (28 CPUs) but not always on — always check availability first and fall back to local if it is offline.
+description: "Where and how code runs at Hoang LLC: on ThangChiba-Desktop (WSL2), where agent runs already execute. Use when cloning a project, building, testing, running scripts/verify.sh or Docker, or when a command might land on another host."
 ---
 
-# Dev Machine (192.168.1.111)
+# Dev Machine (ThangChiba-Desktop)
 
-Hoang LLC has a dedicated dev machine. **Prefer it over your local workspace** for cloning projects, development, heavy builds/tests, and Docker image builds.
+Clone, build, test, Docker and `scripts/verify.sh` run here and only here (`security-baseline` §2).
 
 ## Machine facts
 
-- Host: `192.168.1.111`, hostname `ThangChiba-Desktop`
-- OS: Windows 11 with WSL2 Ubuntu; SSH user: `thang` (key-based auth already set up, no password)
-- Docker: v29.x, Linux engine — 28 CPUs, ~15.5 GB RAM available to Docker
-- Docker TCP port 2375 is intentionally closed (security). Use SSH-based access only.
-- **Not always powered on.** Availability check is mandatory before relying on it.
+- Hostname `ThangChiba-Desktop` (192.168.1.111): Windows 11 with WSL2 Ubuntu. Your run is a Linux shell inside WSL.
+- Docker: Docker Desktop's engine (amd64), used from WSL through Docker Desktop's WSL integration for the Ubuntu distro.
 
-## Step 1 — Availability check (always do this first)
+## Steps
 
-```bash
-ping -c 1 -W 2 192.168.1.111 && ssh -o ConnectTimeout=5 -o BatchMode=yes thang@192.168.1.111 "hostname"
-```
+1. First command in a run that will run code: `hostname`. Anything but `ThangChiba-Desktop`: stop, report on the task, run nothing further. There is no fallback host.
+2. Work under `~/workspace/<project>` on the WSL filesystem, not `/mnt/c`. If the repo is there, `git fetch && git pull` instead of cloning again. Touch only the task's project folder.
+3. Docker: use the local engine; never set `DOCKER_HOST` to an `ssh://` host. If `docker compose version` fails ("could not be found in this WSL 2 distro" means the WSL integration is off), report it on the task as an environment problem.
 
-- Both succeed → use the dev machine.
-- Either fails → the machine is off/asleep. **Do not block on it.** Fall back to local execution, note in your task comment that the dev machine was offline, and continue.
+## Images for the Mac
 
-## Step 2 — Where to work
+Odeku prod is built on MacbookServer by its deploy webhook after a merge. Agents never push images there.
 
-SSH lands in a Windows shell. For dev work, always enter WSL2 Ubuntu:
+## Disk
 
-```bash
-ssh thang@192.168.1.111        # interactive
-ssh thang@192.168.1.111 "wsl -e bash -lc '<command>'"   # one-shot Linux command
-```
+A full C: drive stalls WSL and Docker for every agent on this machine.
 
-Clone and develop projects **inside WSL2** (Linux filesystem, e.g. `~/workspace/<project>`), not on the Windows `C:` mount — WSL filesystem I/O is much faster.
+- Before heavy builds: `docker system df` and `df -h /mnt/c`.
+- Low on space: `docker builder prune`, then report it on the task.
+- Never delete other projects' files or other agents' run folders.
 
-```bash
-ssh thang@192.168.1.111 "wsl -e bash -lc 'mkdir -p ~/workspace && cd ~/workspace && git clone <repo-url>'"
-```
+## Never
 
-If the repo already exists there, `git fetch && git pull` instead of re-cloning.
-
-## Step 3 — Docker builds
-
-Prefer the dev machine's Docker engine for image builds:
-
-```bash
-# From your local machine, over SSH (no TCP exposure needed):
-docker -H ssh://thang@192.168.1.111 build -t <image:tag> .
-
-# Or set it for a whole session:
-export DOCKER_HOST=ssh://thang@192.168.1.111
-```
-
-Alternatively run the build entirely on the machine inside WSL after cloning there.
-
-## Rules
-
-- Never open TCP 2375 or weaken SSH config on this machine.
-- Do not store secrets in files on the dev machine; use env vars scoped to the session or Paperclip secrets.
-- **AWS (D-0012):** run AWS commands on the host your run executes on, not over SSH here. Never use any AWS profile or `~/.aws` file on this machine. If a task really needs AWS here, send the credential over stdin only, never inside the script file or on the ssh command line. `bash -ls` (login shell) puts `~/.local/bin/aws` on `PATH`:
-
-  ```bash
-  { printf 'export AWS_ACCESS_KEY_ID=%q AWS_SECRET_ACCESS_KEY=%q AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null\n' \
-      "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY"; cat script.sh; } \
-    | ssh thang@192.168.1.111 'wsl -e bash -ls'
-  ```
-
-  If your env has `THANGCHIBA_AWS_ACCESS_KEY`/`THANGCHIBA_AWS_SECRET_ACCESS_KEY` instead, pass those two to `printf`.
-- Clean up large temporary artifacts (dangling images, build caches) if a build fails repeatedly: `docker system df` before `docker builder prune`.
-- If the machine is offline and the task is urgent, proceed locally and mention the fallback in the issue comment. Do not ask a human to power it on unless the task explicitly requires that machine.
+- Open Docker TCP port 2375, or weaken the SSH config of this machine.

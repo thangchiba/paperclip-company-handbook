@@ -5,6 +5,8 @@
 - **Nguồn:** Board trả lời card "Hoang Auth: giờ chặn trang quản trị, tài khoản test, 2 secret bị lộ" trên HOA-316 (12:20 JST). CTO ghi lại.
 - **Sửa đổi:** Thay lựa chọn "chỉ vào từ LAN" của Board ngày 01/10 (card trước trên HOA-316). Trang quản trị giữ URL cũ, không chuyển sang cổng localhost.
 
+*(Sửa bởi D-0021 mục 8e: việc "nhờ CTO" chuyển cho InfraEngineer.)*
+
 ## Bối cảnh
 
 - Trang quản trị `https://auth.hoang.jp/admin/` và realm `master` mở ra Internet.

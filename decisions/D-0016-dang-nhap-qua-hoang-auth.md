@@ -5,6 +5,8 @@
 - **Nguồn:** Board tạo HOA-316 và giao CTO. CTO ghi lại quyết định này và làm phần kỹ thuật tại HOA-316 (ADR trong document `adr` của issue).
 - **Sửa đổi:** Không.
 
+*(Sửa bởi D-0021 mục 8d: mục 4, InfraEngineer tạo client theo mặc định trong skill `hoang-auth`; thiết kế khác mặc định đó do Board quyết.)*
+
 ## Bối cảnh
 
 - Board thường dùng **Hoang Auth** cho các dự án của mình. Hoang Auth là Keycloak tại `https://auth.hoang.jp`, realm `hoang`, hiện chỉ đang thử nghiệm nội bộ.

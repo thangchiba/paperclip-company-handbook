@@ -5,6 +5,8 @@
 - **Nguồn:** Board trả lời thẻ "QA thiếu binding AWS: có chặn HOA-268 không?" trên HOA-331 (chọn A); CTO đề xuất và thực hiện tại HOA-331.
 - **Sửa đổi:** D-0012 mục 5 (chỉ áp dụng cho task cần chạy lệnh AWS)
 
+*(Sửa bởi D-0021 mục 8c: mục 2, CTO → InfraEngineer.)*
+
 ## Bối cảnh
 
 - D-0012 mục 5 và dòng cuối khối "AWS credentials (company rule, HOA-196)" trong `AGENTS.md` của 9 agent ghi: `No binding, or it fails: stop, report on the issue, set it blocked.` Câu này không nói rõ chỉ áp dụng khi task chạy lệnh AWS.

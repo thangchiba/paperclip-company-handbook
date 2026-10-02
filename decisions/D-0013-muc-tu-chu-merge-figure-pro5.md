@@ -7,6 +7,8 @@
 - **Cập nhật:** 2026-09-28, Pro5: lần deploy do merge kéo theo tính vào mức `auto`, tới trước launch M1 (Board trả lời card trên HOA-216). Xem mục "Cập nhật 2026-09-28 — Pro5".
 - **Cập nhật:** 2026-09-28, Figure: lần deploy do merge vào odeku `main` kéo theo tính vào mức `auto`, tới trước khi có đơn thật (Board trả lời card trên HOA-215). Xem mục "Cập nhật 2026-09-28 — Figure".
 
+*(Sửa bởi D-0021 mục 8b, 8f, theo lời Board «Dev và Infra tự do merge code vào. Chỉ những task quan trọng thì phát hành PR để tôi review.»: bỏ điều kiện a và kiểm soát bù "CTO review mọi PR" của Pro5. FullstackDev và InfraEngineer tự merge khi đủ điều kiện b, c; task quan trọng mở PR cho Board review. Merge vẫn kéo theo deploy như hai mục cập nhật bên dưới. Phần kỹ thuật của phương án B (Figure): InfraEngineer; việc "CEO hỏi lại Board": ThuKy. Apply hạ tầng Pro5: D-0021 mục 12.)*
+
 ## Bối cảnh
 
 Figure và Pro5 chưa khai báo mức tự chủ, nên theo rules.md mục 7 mặc định là `approve`: mỗi lần merge PR cần Board duyệt bằng card. Thực tế CTO đã tự merge sau khi review (odeku #1, #2, #14; các PR Pro5 cũng vậy). Lúc hỏi, odeku có 4 PR chờ merge (#11, #16, #17, #18); giữ `approve` nghĩa là thêm 4 card cho Board.

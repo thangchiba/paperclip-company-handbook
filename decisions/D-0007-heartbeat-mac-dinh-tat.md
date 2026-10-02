@@ -4,6 +4,8 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 3 và 6 (HOA-2)
 
+*(Sửa bởi D-0021: mục 2 hết hiệu lực; ChiefOfStaff đã bỏ và daily brief đã huỷ (card HOA-82), nên không còn heartbeat ngoại lệ.)*
+
 ## Bối cảnh
 
 Heartbeat theo giờ tốn budget ngay cả khi không có việc. Đa số agent chỉ cần wake khi được giao task hoặc có comment.

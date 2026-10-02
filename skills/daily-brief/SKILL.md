@@ -1,28 +1,15 @@
 ---
 name: daily-brief
-description: Cách soạn Morning brief 07:00 và tổng kết 18:00 cho Board - tổng hợp tiến độ, câu hỏi needs-decision theo lô, chi phí. Dành cho vai Thư ký (Chief of Staff).
+description: Format brief tiến độ hằng ngày cho Board. Đã huỷ (card HOA-82), không gắn cho agent; chỉ dùng khi Board bật lại.
 ---
 
 # daily-brief
 
-Vai Thư ký chạy 2 brief/ngày (ngoại lệ heartbeat duy nhất theo D-0007). Mục tiêu: Board đọc 2 phút là nắm toàn cảnh.
+Daily brief đã huỷ (Board, card HOA-82). Chỉ dùng khi Board ra lệnh bật lại; khi đó ThuKy soạn theo `concise-status-report`, Board đọc trong 2 phút:
 
-## Morning brief (07:00)
+1. **① Kết quả:** task xong theo Project, kèm link bằng chứng.
+2. **② Chờ Board:** link các card `human_only` đang chờ trên task của từng agent, nhắc card chờ quá 24h. Không gom câu hỏi mới vào brief, không trả lời thay Board (`operating-model` mục 3).
+3. **③ Tiếp theo:** việc chính, rủi ro và hạn trong 48h.
+4. **Chi phí:** mức dùng budget, agent chạm 80%.
 
-1. **Hôm nay làm gì:** task đang chạy theo Project, ai làm, ưu tiên.
-2. **Chờ Board:** gom mọi câu hỏi `needs-decision` thành một lô, mỗi câu đúng format A/B/C + đề xuất (theo `needs-decision-protocol`). Card duyệt đang treo.
-3. **Rủi ro/deadline** trong 48h tới.
-
-## Tổng kết tối (18:00)
-
-1. **① Kết quả trong ngày:** task done kèm link bằng chứng, theo Project.
-2. **② Cần quyết:** lô câu hỏi tối + card còn treo (nhắc lại card treo quá 24h).
-3. **③ Ngày mai:** kế hoạch chính.
-4. **Chi phí:** mức dùng budget các agent, cảnh báo ai chạm 80%.
-
-## Quy tắc
-
-- Ngắn gọn, bullet, link trực tiếp tới task/PR — không kể lể.
-- Không bịa số liệu; thiếu dữ liệu thì ghi "chưa có số".
-- Câu hỏi trùng với `decisions/` đã có → tự trả lời bằng D-xxxx, không đưa vào lô hỏi.
-- Chủ nhật tối: thêm mục rà decisions trong tuần, đề xuất gộp/nâng thành rule (D-0002).
+Không bịa số liệu; thiếu dữ liệu thì ghi "chưa có số".

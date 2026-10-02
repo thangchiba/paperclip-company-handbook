@@ -5,9 +5,9 @@ description: Tích hợp đăng nhập Hoang Auth (Keycloak SSO tại auth.hoang
 
 # hoang-auth — Tích hợp Hoang Auth (Keycloak SSO)
 
-Nguồn: skill `integrate-auth` của Board trên MacbookServer (`~/.claude/commands/integrate-auth.md`)
-và bộ docs `~/Workspace/OSS/keycloak/docs/`. CTO chép lên đây theo D-0018 (HOA-316), sau khi quét secret.
-Bản này **không** chứa secret, mật khẩu test hay danh sách client. Các file đó vẫn chỉ nằm trên Mac.
+Nguồn: skill `integrate-auth` của Board trên MacbookServer (`~/.claude/commands/integrate-auth.md`) và bộ docs
+`~/Workspace/OSS/keycloak/docs/`, chép lên đây đã bỏ secret (D-0018, HOA-316). Secret, mật khẩu test và danh sách
+client chỉ nằm trên Mac.
 
 Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự án một client riêng**, không tự làm auth.
 
@@ -27,20 +27,23 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 
 ## Ai làm bước nào
 
-- **Tạo hoặc sửa client (bước 1):** CTO, qua SSH vào MacbookServer (D-0018). Agent khác cần client thì tạo
-  task cho CTO, ghi rõ: tên client, kiểu app (SPA hay backend tự làm OIDC), domain prod, redirect URI, role cần có.
-- **Sửa cấu hình chung** (cài đặt realm `hoang`, IdP Google/GitHub, theme, tunnel Cloudflare): phải hỏi Board
-  trước (D-0018), vì app ngoài Hoang LLC cũng dùng.
+- **Tạo hoặc sửa client (bước 1, 4, 5.2):** InfraEngineer, qua SSH vào MacbookServer (`security-baseline` mục 7).
+  Agent khác cần client thì tạo task cho InfraEngineer, ghi rõ: tên client, kiểu app (SPA hay backend tự làm OIDC),
+  domain prod, redirect URI, role cần có.
 - **Tích hợp code (bước 2–3):** agent dev của dự án.
+- **Board quyết** (D-0016 mục 4, D-0018, D-0021): thiết kế khác mặc định ở bước 1 (agent đề xuất A/B/C); mọi sửa
+  cấu hình chung (cài đặt realm `hoang`, IdP Google/GitHub, theme, tunnel Cloudflare, thêm người dùng hay đổi chính
+  sách đăng ký), vì app ngoài Hoang LLC cũng dùng.
 
 ## Bước 0: Phân tích dự án
 
 1. Xác định repo và thư mục đang làm.
 2. Xác định tech stack (React/Next.js/Vue, Node, Python, Go, Java…).
-3. Tìm domain và port của app (docker-compose, `.env`, `package.json`), hoặc hỏi người giao task.
+3. Tìm domain và port của app (docker-compose, `.env`, `package.json`). Thiếu tên app, domain hay tech stack thì hỏi
+   Board trên task trước khi tạo client.
 4. Đọc `references/INTEGRATION.md` để hiểu luồng SSO.
 
-## Bước 1: Tạo client (CTO)
+## Bước 1: Tạo client
 
 - **Client ID:** tên ngắn của dự án hoặc subdomain (ví dụ `pro5`, `odeku`, `fire`).
 - **Mặc định của Hoang LLC** (chặt hơn skill gốc, áp dụng từ HOA-316):
@@ -112,7 +115,7 @@ KEYCLOAK_ISSUER_URL=https://auth.hoang.jp/realms/hoang
 KEYCLOAK_JWKS_URL=https://auth.hoang.jp/realms/hoang/protocol/openid-connect/certs
 ```
 
-## Bước 4: Cập nhật danh sách client (CTO)
+## Bước 4: Cập nhật danh sách client
 
 Thêm 1 dòng vào bảng `Realm: hoang` trong `~/Workspace/OSS/keycloak/docs/CLIENTS.md` trên Mac. Chỉ thêm dòng
 bằng script, không in cả file. Không ghi secret vào file này.
@@ -121,7 +124,7 @@ bằng script, không in cả file. Không ghi secret vào file này.
 
 1. Mở URL auth với PKCE: phải hiện trang đăng nhập Hoang Auth, không phải `Client not found`.
    Redirect URI lạ phải bị từ chối (400 `Invalid parameter: redirect_uri`).
-2. Xem token mẫu mà không cần đăng nhập (CTO, trên Mac):
+2. Xem token mẫu mà không cần đăng nhập (trên Mac):
    `GET /admin/realms/hoang/clients/<uuid>/evaluate-scopes/generate-example-access-token?scope=openid&userId=<user-id>`.
    Kiểm `aud`, `azp`, role, và không có role của app khác.
 3. Đăng nhập thật trên trình duyệt với một tài khoản đã có trong realm.
@@ -130,6 +133,4 @@ bằng script, không in cả file. Không ghi secret vào file này.
 
 - Mọi app dùng chung realm `hoang`: đăng nhập 1 app thì các app khác cũng nhận phiên SSO.
 - Google và GitHub đăng nhập được mà frontend không phải viết code riêng.
-- Người dùng mới: realm hiện không mở tự đăng ký, và Google/GitHub chỉ liên kết với tài khoản đã có. Muốn thêm
-  người dùng thì hỏi CTO. Đổi chính sách này là đổi cấu hình chung, phải hỏi Board.
-- Thiếu thông tin (tên app, domain, tech stack) thì hỏi người giao task trước khi tạo client.
+- Người dùng mới: realm hiện không mở tự đăng ký, và Google/GitHub chỉ liên kết với tài khoản đã có.
