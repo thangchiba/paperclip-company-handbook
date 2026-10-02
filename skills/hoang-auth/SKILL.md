@@ -103,7 +103,9 @@ Chi tiết: `references/INTEGRATION.md` (Bước 3) và `references/INTEGRATION-
 
 1. Kiểm JWT bằng JWKS (có cache): chữ ký, `iss`, `exp`, và `aud` hoặc `azp` đúng client của app.
 2. Lấy thông tin user từ claim (`sub`, `email`, `email_verified`).
-3. Phân quyền theo `resource_access.<client>.roles` (client role của app).
+3. Phân quyền theo `resource_access.<client>.roles` (client role của app). Không coi "đã đăng nhập" hay
+   realm role `user` là đủ quyền: ai có tài khoản Google cũng tự tạo được tài khoản trong realm và nhận
+   role mặc định, gồm `user` (mục Ghi chú).
 4. Backend không refresh token: token hết hạn thì trả 401.
 5. Backend tự làm OIDC rồi cấp session riêng (kiểu Pro5): dùng thư viện có chứng nhận (`openid-client` cho Node,
    Authlib cho Python). Kiểm state, nonce, PKCE và `iss` trong callback. Không tự viết phần kiểm JWT.
@@ -133,4 +135,11 @@ bằng script, không in cả file. Không ghi secret vào file này.
 
 - Mọi app dùng chung realm `hoang`: đăng nhập 1 app thì các app khác cũng nhận phiên SSO.
 - Google và GitHub đăng nhập được mà frontend không phải viết code riêng.
-- Người dùng mới: realm hiện không mở tự đăng ký, và Google/GitHub chỉ liên kết với tài khoản đã có.
+- Người dùng mới (từ 03/10/2026; Board chọn phương án B trên card `744a1e09` ở HOA-396, làm ở HOA-409):
+  - Google: ai có tài khoản Google với email đã xác minh đều tự tạo được tài khoản ở lần đăng nhập đầu.
+    IdP `google` dùng flow `first broker login` và essential claim `email_verified` = `true`.
+  - GitHub: chỉ liên kết với tài khoản đã có (`invite-only-broker-login`), vì GitHub có thể đưa email
+    chưa xác minh (HOA-360, K7).
+  - Form đăng ký bằng mật khẩu vẫn tắt.
+  - User mới nhận role mặc định của realm (gồm realm role `user`) và đăng nhập được mọi client của realm.
+    App nào cần giới hạn người dùng phải tự kiểm client role của mình.
