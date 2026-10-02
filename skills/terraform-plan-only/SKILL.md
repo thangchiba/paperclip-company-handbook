@@ -26,7 +26,7 @@ Chỉ Board thêm dự án vào danh sách nội bộ. Chưa có trong danh sác
 
 ## 1. Dự án khách: chỉ plan (D-0006)
 
-- Cấm: `terraform apply`, `destroy`, `import`, `state` làm đổi state, sửa state tay, mọi thay đổi qua console hay CLI.
+- Cấm: `terraform apply`, `destroy`, `import`, `state` làm đổi state, sửa state tay, mọi thay đổi qua console hay CLI. Kể cả ban đêm (D-0024).
 - Apply do CI chạy sau khi Board duyệt PR. PR ghi rõ môi trường, số resource add/change/destroy, rủi ro.
 
 ## 2. Dự án nội bộ (Pro5)
@@ -61,6 +61,15 @@ Sau apply, comment theo `concise-status-report`: số resource add/change/destro
    Chuyển issue `in_review`. Chỉ apply khi card được chấp nhận, hoặc Board đồng ý rõ ràng bằng comment trên task (link).
 3. **Apply** đúng plan file đã duyệt (so lại sha256), hoặc đúng danh sách lệnh. Plan đổi hay cần thêm lệnh: dừng, tạo card mới. Mỗi card chỉ cho một lần apply.
 4. Sau apply, dán kết quả lên issue (đã che). Lỗi giữa chừng: ghi trạng thái hiện tại và phương án, không sửa nhanh bằng lệnh chưa duyệt.
+
+### 2c. Ban đêm (D-0024)
+
+Khi chế độ tự quyết bật (`operating-model` mục 1b), InfraEngineer tự apply Pro5 mà 2b đòi card, không cần card, khi đủ cả:
+1. Sau thay đổi, dự báo tổng chi AWS mỗi tháng của Pro5, cộng mọi apply từ 22:00, vẫn dưới $30/tháng (D-0021 mục 12); ghi số trước và sau.
+2. Plan 0 destroy, 0 replace; không thuộc mục "Luôn cần card riêng" dưới.
+3. Không nới IAM, security group, ingress, WAF hay quy tắc chặn; không tạo IAM user, access key hay principal có quyền mới; không đổi secret, KMS hay mã hoá, quyền truy cập public (S3 public access block, bucket policy, CloudFront/OAC, API không auth), DNS hay tunnel Cloudflare; không bật hay nới gửi ra ngoài (SES ra khỏi sandbox, quyền SendMail, SNS/SMS).
+
+Làm đúng bước 1, 3, 4 của 2b (plan file, `sha256sum`, apply đúng file đó, không `-auto-approve`); thay card bằng comment `Quyết thay ban đêm (D-0024): apply Pro5 · <sha256> (N add, M change, 0 destroy, $trước→$sau/tháng) — vì điều kiện 1–3 đạt. Hoàn tác: <plan đảo ngược>`. Dự án khách (mục 1): ban đêm vẫn chỉ plan.
 
 ### Luôn cần card riêng cho từng lần (kể cả trong 2a)
 

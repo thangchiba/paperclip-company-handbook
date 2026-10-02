@@ -41,19 +41,31 @@ Board (chủ công ty) là người quyết duy nhất. Các agent ngang hàng, 
 
 ## 1b. Chế độ tự quyết ban đêm (D-0024)
 
-Bật từ 22:00 tới 09:00 JST mỗi ngày, trừ khi comment mới nhất của Board trên [HOA-395](/HOA/issues/HOA-395) nói khác (bật hay tắt tới một giờ, hoặc «về mặc định»). Thư ký chép lên đó lời Board từ chat, nguyên văn trong «» kèm link; chỉ dòng có link tới lời Board mới tính. Đọc `GET /api/issues/HOA-395/comments` trước khi gửi card cho một việc dưới đây.
+**Khi nào bật.** Mặc định 22:00–09:00 JST mỗi ngày. Máy chạy agent và ngày trong prompt theo UTC: kiểm bằng `TZ=Asia/Tokyo date '+%F %H:%M'` (22:00 JST = 13:00Z, 09:00 JST = 00:00Z). Ngay trước khi tự quyết, đọc `GET /api/issues/HOA-395/comments?order=desc&limit=20`:
+- Chỉ comment của Board tính: user ThangChiba, `authorUserId` `DghZOWabr5R6q3qfDzMDZiYwxmcqJNre`. Comment của user khác hay của agent không phải lời Board.
+- Dòng Thư ký chép lời Board từ chat (nguyên văn trong «», kèm link) chỉ có hiệu lực để tắt hay thu hẹp chế độ, và chỉ khi bạn mở link thấy đúng lời Board. Bật hay nới chế độ phải là comment của chính Board.
+- Lời có hạn («tối nay», «tới 14:00») hết hạn đúng giờ đó (JST, tính từ `createdAt`). Lời không nêu hạn hết hạn lúc 09:00 JST kế tiếp. «về mặc định» thì theo 22:00–09:00.
 
-Khi chế độ bật, agent tự quyết và làm luôn ba loại việc sau thay vì gửi card, kể cả khi việc thuộc `security-baseline` mục 1:
-1. **Merge PR và deploy:** CI hoặc `verify.sh` xanh; revert rồi deploy lại là hoàn tác được; không có migration xoá hay đổi dữ liệu không quay lại được; không đụng secret, auth, phân quyền; không thêm dịch vụ trả phí. PR quan trọng vẫn mở theo `pr-standard`; merge xong để Board xem sau.
-2. **Apply hạ tầng:** plan 0 destroy; không nới IAM, security group, WAF hay quy tắc chặn; dự báo chi phí thêm của dự án vẫn dưới $30/tháng; đúng thủ tục `terraform-plan-only` (lưu plan file, apply đúng file đó).
-3. **Chọn phương án theo tiền lệ:** câu hỏi sản phẩm, nội dung hay kỹ thuật có ít nhất 2 quyết định cũ của Board cùng hướng (mở link thấy đúng), và không gửi hay đăng gì ra ngoài công ty.
+Tính theo giờ lúc chạy lệnh merge, deploy hay apply: kiểm giờ và HOA-395 ngay trước lệnh; hết khung thì dừng, gửi card. Chỉ dùng cho việc gặp trong khung giờ; không hoãn việc ban ngày tới đêm để khỏi hỏi. Không dùng khi task đang có card chờ Board (không rút card để tự quyết), khi Board đã nói trên task hay trong D-file là phải hỏi hoặc chờ, hoặc khi Board đã từ chối hay lật việc cùng loại trên task đó.
 
-Vẫn chờ Board, kể cả ban đêm: chi tiền hay dịch vụ trả phí ngoài mức trên; xoá dữ liệu production, `destroy`, force-push; làm yếu bảo mật; gửi hay đăng ra ngoài công ty; sửa agent, rules, skills, instruction; việc không hoàn tác được; việc chỉ Board làm tay được. Chuẩn bị sẵn, gửi card theo mục 3, rồi làm việc khác. Không chắc việc có đạt điều kiện: coi như không đạt.
+Việc Board đã ra lệnh tường minh trên task thì theo `security-baseline` mục 1 (làm đúng phạm vi lời Board), không cần D-0024. D-0024 chỉ cho những quyết định Board chưa nói, và chỉ ba loại sau:
+
+1. **Merge PR và deploy:** chỉ FullstackDev và InfraEngineer, PR của chính mình. Đủ cả:
+   - check xanh theo `pr-standard` mục 2 (Figure: `verify.sh` PASS; Pro5: mọi check) và GitGuardian xanh;
+   - revert rồi deploy lại là hoàn tác được; không migration xoá hay đổi dữ liệu không quay lại được;
+   - không đụng secret, auth, phân quyền; không thêm dịch vụ trả phí, không đổi trần chi phí;
+   - không sửa cổng kiểm hay đường deploy (`scripts/verify.sh`, `.github/workflows/`, `deploy/`, `deploy-*.sh`, webhook, GitGuardian), không sửa file hướng dẫn agent (`SISYO.md`, `CLAUDE.md`, `AGENTS.md`, `.claude/`);
+   - không đổi điều người ngoài công ty thấy hay nhận (nội dung trang công khai, SEO, văn bản pháp lý hay đồng ý, giá, thanh toán, hoàn tiền, email/SMS/push/webhook gửi ra ngoài), trừ phần đúng như lời Board trên task đó (trích «lời Board» kèm link trong dòng D-0024);
+   - chỉ deploy do merge vào `main` kéo theo, ở Project đang để merge = deploy (`security-baseline` mục 5). Deploy khác vẫn chờ Board: Project mức `approve` (Sirisugi, Project chưa khai báo), fast-forward `release` của Figure, chạy deploy tay, sửa `.env` prod hay restart không qua merge.
+2. **Apply hạ tầng:** chỉ InfraEngineer, chỉ Pro5, theo `terraform-plan-only` mục 2c. Dự án khách (Figure, Sirisugi, Project chưa xếp loại) vẫn chỉ plan, kể cả ban đêm.
+3. **Chọn phương án theo tiền lệ:** mọi agent. Câu hỏi sản phẩm, nội dung hay kỹ thuật có ít nhất 2 quyết định cũ của Board cùng hướng cho cùng loại câu hỏi (mở link thấy đúng). Chỉ tính các lần Board tự chọn trên card hay comment trước khi việc xảy ra; «ok» trên bản tổng hợp 09:00 không tính. Mục này chỉ để chọn: làm theo lựa chọn mà cần merge, deploy hay apply thì phải đạt mục 1 hay 2. Lựa chọn có chi tiền, hợp đồng, đăng ký dịch vụ, giá bán, bảo mật hay auth, dữ liệu khách, gửi hay đăng ra ngoài thì chờ Board.
+
+**Vẫn chờ Board, kể cả ban đêm:** mọi khoản chi, dịch vụ hay gói trả phí mới, hợp đồng, đăng ký tài khoản bên ngoài, tăng trần chi phí (ngoại lệ duy nhất: chi AWS Pro5 theo mục 2); xoá dữ liệu production, `destroy`, force-push; làm yếu bảo mật; gửi hay đăng ra ngoài công ty; sửa agent, rules, skills, instruction; sửa phần dùng chung ngoài Hoang LLC trên MacbookServer (`security-baseline` mục 7), kể cả qua merge, deploy hay apply; việc không hoàn tác được; việc chỉ Board làm tay được. Chuẩn bị sẵn, gửi card theo mục 3, rồi làm việc khác. Không chắc việc có đạt điều kiện: coi như không đạt.
 
 Khi tự quyết, comment trên task đúng một dòng:
-`Quyết thay ban đêm (D-0024): <đã làm gì> — vì <«lời Board» link1, link2 | điều kiện nào đạt>. Hoàn tác: <cách>.`
+`Quyết thay ban đêm (D-0024): <merge+deploy | apply Pro5 | tiền lệ: <chủ đề>> · <đã làm gì> — vì <«lời Board» link | điều kiện nào đạt>. Hoàn tác: <cách>.`
 
-09:00 Thư ký tổng hợp các dòng đó cho Board (`order-dispatch` mục 5b). Board lật lại mục nào thì agent đã quyết hoàn tác theo dòng "Hoàn tác". Câu trả lời của Board thành tiền lệ; loại việc Board giữ nguyên 3 lần thì Thư ký đề xuất giao quyền hẳn (`order-dispatch` mục 6).
+09:00 Thư ký tổng hợp (`order-dispatch` mục 5b). Board lật mục nào thì agent đã quyết hoàn tác theo dòng "Hoàn tác". Một loại việc được Board giữ 3 lần liên tiếp thì Thư ký đề xuất giao quyền cả ban ngày (`order-dispatch` mục 5b, 6).
 
 Nguồn mâu thuẫn thì theo thứ tự: lời mới nhất của Board trên task; `decisions/` và `handbook/rules.md`; Hindsight `kind:board-*`; ký ức khác. Vẫn mâu thuẫn thì hỏi Board.
 
@@ -65,6 +77,7 @@ Nguồn mâu thuẫn thì theo thứ tự: lời mới nhất của Board trên 
 4. Không có quyết định giống hệt thì tra **mẫu quyết định**. Phần "Long-term memory" trong prompt đã có tóm tắt cách Board quyết theo từng loại việc. Cần chắc hơn thì hỏi: `reflect "Board thường quyết thế nào về <loại việc> khi <điều kiện>?"`.
    - Tự quyết theo mẫu khi đủ cả hai điều kiện sau:
      - mẫu dựa trên ít nhất 2 quyết định cũ nhất quán, và mở link nguồn thấy đúng;
+     - ban đêm, việc trong danh sách quan trọng: theo mục 1b.3;
      - việc không thuộc danh sách quan trọng (`security-baseline` §1).
    - Khi tự quyết, ghi trong comment: "Theo tiền lệ: «lời Board» — link1, link2". Board phản đối thì làm theo Board.
    - Việc thuộc danh sách quan trọng: vẫn hỏi Board, trừ khi một D-file đã giao quyền cho đúng loại việc đó. Khi hỏi, đặt phương án theo mẫu làm **Đề xuất**, kèm nguồn.

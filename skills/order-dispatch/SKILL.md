@@ -90,11 +90,13 @@ Board hỏi tình hình hay nhờ tổng hợp: trả lời từ issue, kèm lin
 
 ## 5b. Tổng hợp quyết định ban đêm (09:00, D-0024)
 
-Routine "Tổng hợp quyết định ban đêm (D-0024)" giao Thư ký lúc 09:00 JST mỗi ngày.
-1. Tìm comment chứa `Quyết thay ban đêm (D-0024)` từ lúc chế độ bật (22:00 hôm trước, hoặc theo [HOA-395](/HOA/issues/HOA-395)): `GET /api/companies/{companyId}/issues?q=Quyết thay ban đêm`, đọc comment trong khung giờ.
-2. Đăng một báo cáo trên task routine, đánh số, mỗi mục một dòng `N. [HOA-n](link) · <Agent> · <đã làm gì> · <vì>`. Dòng cuối: `Trả lời «ok» để giữ tất cả, hoặc «lật N» cho từng mục.` Không có mục nào: ghi "Đêm qua không có quyết định thay", task `done`.
-3. Có mục: task `in_review`, chờ Board. Mục bị lật: child issue cho agent đã quyết, khối "Lệnh của Board (nguyên văn)" chép lời Board, việc giao là hoàn tác theo dòng "Hoàn tác". Mục giữ nguyên: không làm gì thêm; plugin tự lưu câu trả lời.
-4. Board đổi chế độ qua chat hay task khác: chép lời Board lên HOA-395, nguyên văn trong «» kèm link.
+Routine "Tổng hợp quyết định ban đêm (D-0024)" giao Thư ký lúc 09:00 JST mỗi ngày. Mọi mốc trong API là UTC.
+1. **Khung:** từ lúc tạo task routine lần trước (`GET /api/companies/{companyId}/issues?originKind=routine_execution&originId=82f4dd85-7594-483a-8d51-a050f935ce81`, lấy `createdAt` lớn nhất khác task này; chưa có thì `2026-10-02T13:00:00Z`) tới lúc chạy, gồm cả việc làm sau 09:00 và khung Board bật thêm trên HOA-395.
+2. **Tìm:** `GET /api/companies/{companyId}/issues?q="Quyết thay ban đêm (D-0024)"&updatedSince=<mốc>`, rồi với từng issue đọc comment có `createdAt` ≥ mốc chứa `Quyết thay ban đêm (D-0024):`. Đối chiếu thêm PR đã merge vào `main` của odeku và pro5, và comment apply của InfraEngineer trong khung. Việc thuộc 3 loại mà thiếu dòng D-0024 thì liệt kê riêng dưới «Không ghi dòng D-0024».
+3. **Báo cáo:** một comment trên task routine, đánh số, mỗi mục `N. [HOA-n](link) · <Agent> · <loại> · <đã làm gì> · <vì> · Hoàn tác: <cách>`. Kèm một card `request_item_verdicts` (`resolverPolicy: "human_only"`, `continuationPolicy: "wake_assignee"`, `idempotencyKey: "night-digest:<YYYY-MM-DD>"`), mỗi mục một item, verdict `approve` = giữ, `reject` = lật, `allowBulkApprove: true`, `supersedeOnUserComment: true`. Task `in_review`. Không có mục nào: ghi "Đêm qua không có quyết định thay", task `done`, không gửi card.
+4. **Board trả lời** trên card, hoặc comment «ok» / «lật N»; comment chỉ tính khi tác giả là Board (`authorUserId` `DghZOWabr5R6q3qfDzMDZiYwxmcqJNre`). Mục bị lật: tạo issue hoàn tác với `parentId` = task gốc HOA-n, `projectId` = project của task đó, giao agent đã quyết; khối "Lệnh của Board (nguyên văn)" chép câu trả lời của Board kèm link và dòng D-0024 gốc; việc giao là hoàn tác theo dòng "Hoàn tác". Board trả lời đủ mọi mục: task routine `done`. Chưa trả lời: giữ `in_review`; mục đó không tính là giữ.
+5. **Đếm:** mỗi mục đã trả lời thêm một dòng vào document `tien-le-ban-dem` trên HOA-395: `<ngày> · <loại> · <Project> · HOA-n · giữ|lật · <link câu trả lời>`. Một `<loại> · <Project>` có 3 lần giữ liên tiếp, không lần lật: đề xuất giao quyền theo mục 6, phạm vi là tự quyết cả ban ngày cho đúng loại đó.
+6. **Board đổi chế độ qua chat hay task khác:** chỉ chép lên HOA-395 khi Board tắt hay thu hẹp chế độ, lời Board nguyên văn trong «» kèm link và giờ hết hạn JST tuyệt đối. Board muốn bật hay nới thì nhắc Board comment trực tiếp trên HOA-395. Agent không sửa mô tả HOA-395.
 
 ## 6. Ghi Hindsight và đề xuất giao quyền
 

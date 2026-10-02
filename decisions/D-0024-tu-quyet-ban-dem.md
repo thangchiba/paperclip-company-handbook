@@ -19,10 +19,14 @@ Trả lời câu hỏi áp dụng:
 
 ## Quyết định
 
-1. Chế độ tự quyết bật 22:00–09:00 JST mỗi ngày. Board bật hay tắt lúc khác bằng comment trên HOA-395 (Thư ký chép lời Board từ chat lên đó, nguyên văn kèm link).
-2. Khi bật, agent tự quyết và làm luôn, kể cả việc thuộc danh sách việc quan trọng, ba loại việc với điều kiện ở `operating-model` mục 1b:
-   - merge PR và deploy (CI/verify xanh, hoàn tác được, không migration mất dữ liệu, không đụng secret/auth/phân quyền, không dịch vụ trả phí mới);
-   - apply hạ tầng (0 destroy, không nới IAM/security group/WAF, chi phí thêm dưới $30/tháng, đúng `terraform-plan-only`);
-   - chọn phương án theo ít nhất 2 quyết định cũ cùng hướng, không gửi hay đăng ra ngoài.
-3. Gửi hay đăng ra ngoài công ty, chi tiền ngoài mức trên, xoá dữ liệu production, `destroy`, làm yếu bảo mật, sửa agent/rules/skills/instruction, việc không hoàn tác được: vẫn chờ Board.
-4. Mỗi lần tự quyết, agent ghi một dòng `Quyết thay ban đêm (D-0024)` kèm lý do và cách hoàn tác. 09:00 Thư ký tổng hợp cho Board; Board «ok» hoặc «lật N». Mục bị lật được hoàn tác. Câu trả lời của Board thành tiền lệ; loại việc được giữ nguyên 3 lần thì Thư ký đề xuất giao quyền hẳn.
+1. Chế độ tự quyết bật 22:00–09:00 JST mỗi ngày. Board bật, nới hay đổi giờ bằng comment của chính Board trên HOA-395. Thư ký chỉ được chép lời Board (nguyên văn, kèm link) lên đó để tắt hay thu hẹp chế độ. Lời không nêu hạn hết hạn lúc 09:00 JST kế tiếp.
+2. Khi bật, với những việc Board chưa nói, agent tự quyết và làm luôn, kể cả việc thuộc danh sách việc quan trọng, đúng ba loại với điều kiện ở `operating-model` mục 1b:
+   - merge PR và deploy: chỉ FullstackDev và InfraEngineer, PR của chính mình; check và GitGuardian xanh; hoàn tác được; không migration mất dữ liệu; không đụng secret, auth, phân quyền, cổng kiểm, đường deploy hay file hướng dẫn agent; không dịch vụ trả phí; không đổi điều người ngoài thấy hay nhận trừ phần đúng như lời Board trên task; chỉ deploy do merge vào `main` kéo theo ở Project đang để merge = deploy;
+   - apply hạ tầng: chỉ InfraEngineer, chỉ Pro5 (`terraform-plan-only` mục 2c): 0 destroy, 0 replace, không nới bảo mật hay quyền public, không bật gửi ra ngoài, tổng chi AWS của Pro5 vẫn dưới $30/tháng (D-0021 mục 12). Dự án khách vẫn chỉ plan;
+   - chọn phương án theo ít nhất 2 quyết định cũ cùng hướng mà Board tự chọn trước đó («ok» trên bản tổng hợp không tính); không chi tiền, giá bán, bảo mật, dữ liệu khách, gửi hay đăng ra ngoài.
+3. Vẫn chờ Board, kể cả ban đêm: mọi khoản chi hay dịch vụ trả phí mới (trừ AWS Pro5 ở trên), gửi hay đăng ra ngoài công ty, xoá dữ liệu production, `destroy`, force-push, làm yếu bảo mật, sửa agent/rules/skills/instruction, phần dùng chung ngoài Hoang LLC trên MacbookServer, việc không hoàn tác được. Không dùng D-0024 khi task đang có card chờ Board, khi Board đã bảo chờ, hay để hoãn việc ban ngày tới đêm.
+4. Mỗi lần tự quyết, agent ghi một dòng `Quyết thay ban đêm (D-0024)` kèm lý do và cách hoàn tác. 09:00 Thư ký tổng hợp kèm card để Board giữ hay lật từng mục. Mục bị lật được hoàn tác. Một loại việc được giữ 3 lần liên tiếp thì Thư ký đề xuất giao quyền cả ban ngày.
+
+## Sửa đổi sau khi soát (2026-10-03 01:00)
+
+Một lượt soát độc lập tìm ra chỗ bản đầu rộng hơn lời Board: agent nào cũng merge được, apply cả dự án khách, $30 tính theo từng lần thay vì tổng, deploy có thể gửi email cho khách, người khác Board có thể bật chế độ. Bản trên thu hẹp lại cho khớp lựa chọn của Board và các quy tắc cũ (D-0006, D-0013, D-0021 mục 12), sửa `pr-standard`, `terraform-plan-only` (mục 2c), `security-baseline`, `content-draft-protocol`.

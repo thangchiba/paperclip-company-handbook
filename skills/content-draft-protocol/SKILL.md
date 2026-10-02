@@ -17,5 +17,5 @@ Nội dung công khai đại diện cho công ty hoặc khách hàng: Board duy�
 
 ## Cấm
 
-- Đăng hay gửi ra ngoài khi Board chưa duyệt bản cuối.
+- Đăng hay gửi ra ngoài khi Board chưa duyệt bản cuối. Kể cả ban đêm (D-0024): đưa nội dung lên site, email hay kênh ngoài qua merge hoặc deploy vẫn là đăng hay gửi.
 - Nhắc tên khách hàng hay dự án khác khi chưa được phép.

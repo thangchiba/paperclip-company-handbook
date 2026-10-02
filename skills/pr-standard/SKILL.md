@@ -28,6 +28,7 @@ Lời Board (2026-10-02, D-0021): «Dev và Infra tự do merge code vào. Chỉ
   2. Hỏi Board bằng card `request_confirmation` `human_only` trên task, kèm link PR (`operating-model` mục 3). Mô tả card theo `concise-status-report`.
   3. Merge sau khi Board chấp nhận card hoặc đồng ý bằng comment. Board yêu cầu sửa: sửa rồi hỏi lại bằng card mới.
 - Không chắc việc có quan trọng không: coi là quan trọng.
+- **Ban đêm (D-0024):** khi chế độ tự quyết bật (`operating-model` mục 1b), PR quan trọng của chính bạn đạt đủ điều kiện mục 1b.1 thì không gửi card: mở PR theo mục 1, merge, làm mục 3, rồi comment trên task dòng `Quyết thay ban đêm (D-0024): …`. PR chạm secret, auth, phân quyền, `SISYO.md`/`CLAUDE.md`, cổng kiểm hay đường deploy, hoặc thêm dịch vụ trả phí: vẫn chờ Board.
 
 ## 3. Sau khi merge
 
@@ -38,4 +39,5 @@ Lời Board (2026-10-02, D-0021): «Dev và Infra tự do merge code vào. Chỉ
 
 - Merge khi check đỏ hay GitGuardian đỏ; chỉ Board đánh dấu false positive.
 - Force-push branch chung, bỏ qua hook.
-- Merge PR của việc quan trọng khi Board chưa đồng ý.
+- Merge PR của việc quan trọng khi Board chưa đồng ý, trừ ban đêm đúng `operating-model` mục 1b (D-0024).
+- Merge PR của agent khác.

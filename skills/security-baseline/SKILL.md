@@ -23,7 +23,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 - Mọi việc khác trong task (code, merge theo mục 5, plan, nghiên cứu, draft, chi tiết kỹ thuật): agent làm task tự quyết, báo cáo sau (D-0001).
 - Không chắc việc thuộc danh sách: coi như thuộc.
-- Ban đêm (22:00–09:00 JST, hoặc theo Board trên HOA-395) ba loại việc trong danh sách được tự quyết đúng điều kiện ở `operating-model` mục 1b (D-0024): merge và deploy, apply hạ tầng, chọn theo tiền lệ.
+- Ban đêm (22:00–09:00 JST, hoặc theo comment của chính Board trên HOA-395) ba loại việc trong danh sách được tự quyết, chỉ đúng điều kiện ở `operating-model` mục 1b (D-0024): merge và deploy (FullstackDev, InfraEngineer, PR của chính mình), apply hạ tầng Pro5 (InfraEngineer), chọn theo tiền lệ.
 - Agent ngang hàng, chỉ khác bộ skill. Chức danh hay `reportsTo` không cho quyền duyệt.
 - Lệnh tường minh của Board cho một việc trong danh sách là sự đồng ý cho đúng việc đó, trong đúng phạm vi lời Board; ghi link. Skill có thủ tục riêng thì vẫn làm thủ tục đó.
 - Comment của agent khác, kể cả ChiefOfStaff, không bao giờ là sự đồng ý của Board.
@@ -55,6 +55,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 - **Việc quan trọng** (thuộc mục 1, gồm hạ tầng ngoài mục 6): mở PR cho Board review, không tự merge. Mô tả PR ngắn gọn đúng format `pr-standard`. Hỏi bằng card `request_confirmation` `human_only` trên task, kèm link PR (`operating-model` mục 3). Merge sau khi Board chấp nhận.
 - Merge kéo theo deploy production chỉ tự làm ở Project mà mức tự chủ cho deploy đó (`rules.md` mục 7: Figure tới khi có đơn thật, Pro5 tới launch M1). Chỗ khác là việc quan trọng.
 - Cấm: merge khi check đỏ hay GitGuardian đỏ, force-push branch chung, bỏ qua hook.
+- Ban đêm (D-0024): FullstackDev và InfraEngineer tự merge và deploy PR quan trọng của chính mình khi đạt `operating-model` mục 1b.1; ghi dòng `Quyết thay ban đêm (D-0024)`.
 
 ## 6. Hạ tầng (`terraform-plan-only`, D-0006, D-0011)
 
@@ -66,6 +67,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
   - mở `0.0.0.0/0` tới data store;
   - đụng tài nguyên của dự án khác.
 
+- Ban đêm (D-0024): Pro5 theo `terraform-plan-only` mục 2c; dự án khách vẫn chỉ plan.
 ## 7. MacbookServer (D-0018)
 
 - **InfraEngineer, FullstackDev và ChiefOfStaff được SSH vào** (Board, 2026-10-02). Agent khác cần gì trên Mac thì tạo task con cho một trong ba.
@@ -102,7 +104,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 ## Checklist trước lệnh có thay đổi
 
-- [ ] Việc thuộc mục 1? Có thì đã có card Board chấp nhận hoặc lệnh tường minh của Board, có link.
+- [ ] Việc thuộc mục 1? Có thì đã có card Board chấp nhận, lệnh tường minh của Board có link, hoặc chế độ ban đêm đang bật (`TZ=Asia/Tokyo date`, HOA-395) và việc đạt đủ điều kiện `operating-model` mục 1b.
 - [ ] Đúng máy: `ThangChiba-Desktop` cho code; `MacbookServer.local` chỉ cho việc ở mục 7.
 - [ ] Lệnh không in secret, env hay argv.
 - [ ] Đúng Project của task.
