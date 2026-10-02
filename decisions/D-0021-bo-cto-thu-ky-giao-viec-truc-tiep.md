@@ -58,7 +58,7 @@ Trả lời câu hỏi áp dụng:
    - Agent khác không ghi; bài học đề xuất viết thành dòng `Ghi nhớ đề xuất: …` trong comment đóng task. Đây là quy ước trong script và instruction; server chưa chặn.
    - Plugin vẫn tự lấy lời Board. Mô tả task cắt ở 1.500 ký tự, ngữ cảnh comment trước cắt ở 300 ký tự.
    - Mỗi mục nhớ trong prompt có nhãn nguồn: [Board], [Thư ký tóm tắt], [Agent đề xuất].
-7. **Code chạy trên ThangChiba-Desktop** (máy Windows, WSL). Không chạy code, build, test của dự án trên MacbookServer. Docker được bật cho Ubuntu WSL trên Desktop. QA và ContentCreator tạm dừng tới khi Board đăng nhập codex trên Desktop, rồi chuyển sang chạy trên Desktop.
+7. **Code chạy trên ThangChiba-Desktop** (máy Windows, WSL). Không chạy code, build, test của dự án trên MacbookServer. QA và ContentCreator dùng codex, đã đăng nhập trên Desktop ngày 2026-10-02, nên chạy trên Desktop như mọi agent. Lệnh `docker` trong Ubuntu WSL chưa dùng được, vì Docker Desktop chưa bật WSL integration cho Ubuntu. Thiếu công cụ thì báo trên task, không chuyển sang Mac.
 8. **Việc của CTO chuyển như sau:**
    - a. **SSH vào MacbookServer (D-0018):** InfraEngineer, FullstackDev và ThuKy, cùng key, cùng điều kiện: lệnh chỉ đọc và lệnh phục vụ dự án Hoang LLC thì tự chạy; sửa phần dùng chung ngoài Hoang LLC phải hỏi Board trước. QA, ProductManager, MarketingManager, ContentCreator không SSH. Không agent nào đọc key, secret hay DB của Paperclip trên Mac (`security-baseline`).
    - b. **Merge PR (thay điều kiện a của D-0013):** FullstackDev và InfraEngineer tự merge code của mình, không cần review của agent khác hay QA. Vẫn tự kiểm: kiểm tra xanh và GitGuardian xanh (điều kiện b, c của D-0013).
