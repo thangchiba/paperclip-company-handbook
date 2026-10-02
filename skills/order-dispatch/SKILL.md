@@ -65,8 +65,9 @@ Nguồn: <link task hoặc comment>
 ```
 
 - Phần việc phụ thuộc nhau: xếp thứ tự bằng `blockedByIssueIds`.
+- Effort từng child issue theo `operating-model` mục 4: lời Board nêu mức ("effort high", "cái này low thôi") thì đặt đúng mức đó; không nêu thì Thư ký tự chọn theo bảng. Comment xác nhận ghi mức effort ở cuối mỗi dòng giao việc.
 - Task lệnh: `blocked`, `blockedByIssueIds` là các con.
-- Đăng **một comment xác nhận** trên task lệnh, mỗi phần một dòng `«<cụm lời Board>» → <Agent> · [HOA-n](link)`. Thêm dòng "Áp dụng: …" nếu có, chép lại mọi dòng "Thư ký suy ra: …" để Board phản đối được, và dòng `Hindsight: đã ghi <doc-id>: «<toàn văn bản ghi>»` hoặc `Hindsight: bỏ qua (lệnh một lần)`.
+- Đăng **một comment xác nhận** trên task lệnh, mỗi phần một dòng `«<cụm lời Board>» → <Agent> · [HOA-n](link) · effort <mức>`. Thêm dòng "Áp dụng: …" nếu có, chép lại mọi dòng "Thư ký suy ra: …" để Board phản đối được, và dòng `Hindsight: đã ghi <doc-id>: «<toàn văn bản ghi>»` hoặc `Hindsight: bỏ qua (lệnh một lần)`.
 
 **Tự kiểm từng child issue trước khi tạo (bắt buộc):**
 - [ ] Mỗi yêu cầu trong "Việc giao" và "Tiêu chí xong" truy được về một cụm chữ trong phần trích dẫn.

@@ -91,6 +91,14 @@ Mọi loại card khoá ở `human_only`: card chỉ để hỏi Board, không g
   ```
   - Không viết "Board muốn …", "Board yêu cầu …" ngoài một câu trích «…» có link.
   - Thứ tự dùng `blockedByIssueIds`.
+  - **Effort** (D-0023): mặc định mọi agent Claude chạy Opus 5.5, effort `max`. Người tạo child issue chọn effort cho việc đó bằng `assigneeAdapterOverrides: {"adapterConfig": {"effort": "<mức>"}}` khi tạo (`POST /api/companies/{companyId}/issues`) hoặc sửa issue; Board nói mức nào thì đặt đúng mức đó. Không nói thì tự chọn:
+    | Mức | Khi nào |
+    |---|---|
+    | `max` (bỏ trống) | thiết kế, kiến trúc, bảo mật, production, debug khó, việc mơ hồ hay nhiều bước |
+    | `high` | code hoặc tài liệu thường, phạm vi rõ |
+    | `medium` | sửa nhỏ, kiểm tra theo checklist, tra cứu có đích |
+    | `low` | đổi tên, cập nhật trạng thái, chép số liệu |
+    Không chắc thì để `max`. Chỉ đặt `effort` (và `model` khi Board chỉ định) trong `assigneeAdapterOverrides`; không đặt `command`, `env` hay khoá khác.
 - Không giao việc bằng @mention; mention không đánh thức ai.
 - Kẹt vì thiếu quyền hay thiếu quyết định: hỏi Board (mục 3), không chuyển việc cho agent khác.
 
