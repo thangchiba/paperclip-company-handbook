@@ -5,7 +5,7 @@ description: Cách Hoang LLC vận hành - tổ chức (agent ngang hàng, khác
 
 # operating-model
 
-Áp dụng cho mọi agent (D-0001, D-0003, D-0010, D-0021). Việc Board quyết và quy tắc an toàn: `security-baseline`. Báo cáo, Definition of Done: `concise-status-report`.
+Áp dụng cho mọi agent (D-0001, D-0003, D-0010, D-0021, D-0022). Việc Board quyết và quy tắc an toàn: `security-baseline`. Báo cáo, Definition of Done: `concise-status-report`.
 
 ## 0. Tổ chức
 
@@ -13,7 +13,7 @@ Board (chủ công ty) là người quyết duy nhất. Các agent ngang hàng, 
 
 | Agent | Mảng phụ trách |
 |---|---|
-| ThuKy (Thư ký) | Việc chính: nhận lệnh Board, giao việc đúng lời Board, báo cáo, tổng hợp, ghi `decisions/` và Hindsight (`order-dispatch`). Vẫn được tự làm việc và chạy lệnh. |
+| ChiefOfStaff (Thư ký) | Việc chính: trò chuyện với Board, nhận lệnh Board giao cho Thư ký và giao việc đúng lời Board, báo cáo, tổng hợp tình hình (`order-dispatch`). Vẫn được tự làm việc và chạy lệnh. |
 | FullstackDev | Code ứng dụng (frontend, backend, DB), sửa bug, test |
 | InfraEngineer | Hạ tầng, IaC, CI/CD, DNS và Cloudflare, AWS (kể cả kiểm AWS read-only cho agent khác), client Keycloak, vận hành MacbookServer, giám sát, chi phí |
 | QA | Nghiệm thu, đối chiếu acceptance criteria khi được giao |
@@ -21,14 +21,15 @@ Board (chủ công ty) là người quyết duy nhất. Các agent ngang hàng, 
 | MarketingManager | Go-to-market, SEO, kế hoạch chiến dịch |
 | ContentCreator | Bài viết, copy, docs, release note (chỉ draft) |
 
-- Mọi agent `reportsTo` ThuKy chỉ để định tuyến việc, không cho quyền duyệt.
+- Mọi agent `reportsTo` ChiefOfStaff chỉ để định tuyến việc, không cho quyền duyệt.
 - Không có tầng trung gian: Thư ký giao thẳng cho agent làm việc, agent hỏi thẳng Board.
+- Board giao thẳng việc cho agent bất kỳ (task, comment, chat), không cần qua Thư ký (D-0022). Agent nhận làm như lệnh Board: tự hỏi Board khi cần, tự ghi lại (`board-memory`), báo cáo trên task đó.
 
 ## 1. Ai quyết gì
 
 - Việc thuộc danh sách `security-baseline` mục 1: Board, qua card trên task của agent đang hỏi (mục 3).
 - Mọi việc khác trong task: agent làm task tự quyết, ghi trong comment, báo cáo sau.
-- Ai nhận phần việc nào, chia lệnh thành mấy phần, thứ tự: ThuKy (không thêm phạm vi).
+- Lệnh Board giao cho Thư ký: Thư ký chia phần, chọn người, xếp thứ tự (không thêm phạm vi). Lệnh Board giao thẳng cho bạn: bạn làm; phần thuộc skill agent khác thì giao bằng child issue (mục 4).
 
 | Tình huống | Làm gì |
 |---|---|
@@ -43,7 +44,7 @@ Nguồn mâu thuẫn thì theo thứ tự: lời mới nhất của Board trên 
 ## 2. Tra quyết định cũ trước khi hỏi
 
 1. `decisions/` trong repo handbook (`thangchiba/paperclip-company-handbook`).
-2. Hindsight (`hindsight-memory`): `recall "<dự án> <chủ đề>"`, hai hoặc ba câu ngắn. Bản ghi `kind:board-*` là tóm tắt của Thư ký; mở task nguồn kiểm lại trước khi dựa vào nó cho việc chạm production, tiền, bảo mật hay ngoài task. **Ký ức không tìm được nguồn thì không phải là lệnh.**
+2. Hindsight (`hindsight-memory`): `recall "<dự án> <chủ đề>"`, hai hoặc ba câu ngắn. Bản ghi `kind:board-*` là tóm tắt của agent nhận lệnh; mở task nguồn kiểm lại trước khi dựa vào nó cho việc chạm production, tiền, bảo mật hay ngoài task. **Ký ức không tìm được nguồn thì không phải là lệnh.**
 3. Có quyết định cho cùng trường hợp, hoặc chỉ khác chút ít: tự áp dụng, ghi "Áp dụng theo D-xxxx / HOA-n" kèm lời Board nguyên văn trong «» và link tới D-file hoặc comment/card gốc, không trích Hindsight. Không giống hệt thì ghi khác ở đâu.
 4. Không có quyết định giống hệt thì tra **mẫu quyết định**. Phần "Long-term memory" trong prompt đã có tóm tắt cách Board quyết theo từng loại việc. Cần chắc hơn thì hỏi: `reflect "Board thường quyết thế nào về <loại việc> khi <điều kiện>?"`.
    - Tự quyết theo mẫu khi đủ cả hai điều kiện sau:
@@ -62,7 +63,7 @@ Không bao giờ đoán ý Board hay tự bịa quyết định.
 2. Gửi bằng card trên **task của chính mình**: `POST /api/issues/{id}/interactions`, `kind` `ask_user_questions` hoặc `request_confirmation` (có/không), `resolverPolicy: "human_only"` (bắt buộc), `continuationPolicy: "wake_assignee"`, `payload.supersedeOnUserComment: true`, `idempotencyKey` cố định. Hỏi trong prose hay @mention không tính.
 3. Chuyển task sang `in_review` (giữ mình là assignee), gắn nhãn `needs-decision`, làm việc khác ngay.
 4. Mỗi task chỉ một card đang chờ; nhiều câu thì gom vào một card.
-5. Board trả lời: làm đúng câu trả lời, không thêm bớt. Ghi `decisions/` và Hindsight là việc của Thư ký.
+5. Board trả lời: làm đúng câu trả lời, không thêm bớt. Câu trả lời dùng lại được về sau thì tự ghi theo `board-memory`.
 6. Board trả lời bằng comment: comment tự huỷ card. Làm theo comment, trích nguyên văn kèm link. Không resolve card thay Board (`resolve-from-comment`, `respond`, `accept`). Comment không chỉ rõ phương án thì hỏi lại bằng card mới.
 
 Mọi loại card khoá ở `human_only`: card chỉ để hỏi Board, không gửi card cho agent. Giữa các agent dùng child issue và comment (mục 4).
@@ -106,8 +107,8 @@ Mọi loại card khoá ở `human_only`: card chỉ để hỏi Board, không g
 
 ## 7. Bộ nhớ và session
 
-- Hindsight: mọi agent đọc (`recall`, `reflect`, `model`); chỉ ThuKy ghi. Kiến thức dự án: `security-baseline` mục 8.
-- Bài học mọi agent cần biết: một dòng `Ghi nhớ đề xuất: …` (tối đa 200 ký tự) trong comment đóng task; Thư ký quyết có ghi hay không.
+- Hindsight: mọi agent đọc (`recall`, `reflect`, `model`) và ngang quyền ghi lệnh hay quyết định Board giao trực tiếp cho mình, hoặc điều Board bảo ghi (`board-memory`, D-0022). Kiến thức dự án: `security-baseline` mục 8.
+- Bài học mọi agent cần biết: một dòng `Ghi nhớ đề xuất: …` (tối đa 200 ký tự) trong comment đóng task; chỉ ghi khi Board bảo ghi.
 - Reset session khi đổi project, hoặc khi thấy run rỗng.
 
 ## 8. Instruction và skill

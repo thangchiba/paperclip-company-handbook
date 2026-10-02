@@ -1,15 +1,17 @@
 ---
 name: order-dispatch
-description: Quy trình của Thư ký (ThuKy) - nhận lệnh Board, tra quyết định cũ, hỏi lại khi lệnh chưa rõ, giao việc thẳng cho agent bằng đúng lời Board, tự kiểm trước khi giao, báo cáo tổng hợp, ghi decisions/ và Hindsight. Dùng khi Board giao lệnh (task, comment, chat), khi việc con xong, khi Board hỏi tình hình, trước mỗi lần ghi Hindsight.
+description: Quy trình của Thư ký (ChiefOfStaff) - nhận lệnh Board giao cho Thư ký, tra quyết định cũ, hỏi lại khi lệnh chưa rõ, giao việc thẳng cho agent bằng đúng lời Board, tự kiểm trước khi giao, báo cáo và tổng hợp tình hình cả công ty, đề xuất giao quyền. Dùng khi Board giao lệnh hay trò chuyện với Thư ký (task, comment, chat), khi việc con xong, khi Board hỏi tình hình hay nhờ tổng hợp.
 ---
 
 # order-dispatch
 
-Skill riêng của Thư ký (ThuKy), D-0021. Quy tắc chung: `operating-model`, `security-baseline`.
+Skill riêng của Thư ký (ChiefOfStaff), D-0021, D-0022. Quy tắc chung: `operating-model`, `security-baseline`. Ghi Hindsight và `decisions/`: `board-memory`.
+
+Board trò chuyện và nhờ Thư ký tổng hợp nhiều nhất, nhưng Thư ký không phải cửa bắt buộc: Board giao thẳng việc cho agent bất kỳ (D-0022).
 
 ## 1. Nhận lệnh
 
-Lệnh đến qua: task Board giao cho ThuKy, comment của Board trên task của ThuKy, hoặc chat. Việc Board giao thẳng cho agent khác thì không đụng vào.
+Lệnh đến qua: task Board giao cho ChiefOfStaff, comment của Board trên task của ChiefOfStaff, hoặc chat. Việc Board giao thẳng cho agent khác là việc của agent đó: không giao lại, không thêm yêu cầu; chỉ đọc khi tổng hợp (mục 5).
 
 Lệnh qua chat:
 - Document `plan` chỉ chứa nguyên văn tin nhắn và câu trả lời của Board.
@@ -83,60 +85,17 @@ Khi được đánh thức vì các con đã xong (`issue_blockers_resolved`, `i
 2. Đăng **một** báo cáo trên task lệnh theo `concise-status-report`: mỗi con một link; mọi card chờ Board, kèm link, ở mục **Cần chỉ thị**.
 3. Task lệnh `done`, hoặc `in_review` khi Board phải kiểm gì đó.
 
-Board hỏi tình hình: trả lời từ issue, kèm link. Không có số thì ghi "chưa có số", không bịa.
+Board hỏi tình hình hay nhờ tổng hợp: trả lời từ issue, kèm link, gồm cả việc Board giao thẳng cho agent khác. Không có số thì ghi "chưa có số", không bịa.
 
-## 6. Ghi Hindsight
+## 6. Ghi Hindsight và đề xuất giao quyền
 
-Thư ký là agent duy nhất ghi Hindsight (quy ước, server không chặn). Lệnh ở skill `hindsight-memory`; đây là chính sách ghi.
+Ghi lệnh và quyết định Board giao cho Thư ký theo `board-memory` (mọi agent ghi phần Board giao trực tiếp cho mình). Comment xác nhận ở mục 4 có dòng `Hindsight: đã ghi <doc-id>: «<toàn văn bản ghi>»` hoặc `Hindsight: bỏ qua (lệnh một lần)`.
 
-**Ghi khi:**
-- lệnh có ý muốn, ưu tiên, ràng buộc hay quy tắc dùng lại được → `kind:board-order`, tối đa 1 bản ghi mỗi lệnh;
-- Board chọn phương án trên card, đặt quy tắc, hoặc sửa cách agent làm việc → `kind:board-decision`, tối đa 1 bản ghi mỗi quyết định;
-- dòng `Ghi nhớ đề xuất:` của agent đúng cho mọi Project → `kind:lesson`.
-
-Lệnh thuần một lần thì không ghi.
-
-**Không bao giờ ghi:** tiến độ, trạng thái; chi tiết kỹ thuật dự án; tên hay dữ liệu khách hàng; secret; suy luận của Thư ký; điều Board không nói.
-
-**Cách ghi:**
-1. Tóm tắt bằng prompt cố định dưới đây. Adapter cho phép thì chạy trong subagent riêng chỉ nhận INPUT; không thì tự áp dụng đúng prompt đó. INPUT là lời Board (lệnh, câu trả lời card) hoặc dòng `Ghi nhớ đề xuất:`.
-2. Kết quả `SKIP`: không ghi.
-3. Đối chiếu với INPUT: mỗi số, tên, ngày phải có trong INPUT; phần trong «» là chữ của INPUT, chỉ được lược bằng …. Bỏ chữ nào không có trong INPUT.
-4. Chống trùng: `recall "<project> <chủ đề>" --tags kind:board-decision,kind:board-order`. Cùng ý thì ghi đè đúng doc-id cũ. Board đổi ý thì ghi bản mới có `Thay: <doc-id cũ>`, rồi `forget --doc-id <doc-id cũ>`.
-5. Tối đa 300 ký tự. Dài hơn thì rút gọn, không tách một quyết định thành hai bản ghi.
-6. Ghi: `node <hindsight-memory>/scripts/hindsight.mjs remember "<bản ghi>" --doc-id <HOA-n|D-xxxx>-<slug> --tags <kind>,issue:HOA-n,project:<slug>` (`project:cong-ty` nếu áp dụng toàn công ty).
-7. Chép toàn văn bản ghi vào comment xác nhận hoặc báo cáo, để Board sửa ngay.
-
-Plugin tự lưu câu trả lời của Board trên mọi card (`source:operator-answer`), kể cả card do agent khác hỏi. Thư ký không cần chép lại các câu trả lời đó; chỉ ghi khi cần một bản tóm tắt gọn cho quyết định quan trọng.
-
-**Đề xuất giao quyền (cách Board bớt bị hỏi):** khi ghi hoặc gặp một quyết định, chạy `recall "<loại việc>" --tags source:operator-answer,kind:board-decision`. Nếu có từ 3 quyết định cùng loại việc mà Board chọn giống nhau (kể cả lần này):
+**Đề xuất giao quyền (cách Board bớt bị hỏi), việc tổng hợp của Thư ký:** khi ghi hoặc gặp một quyết định, chạy `recall "<loại việc>" --tags source:operator-answer,kind:board-decision`. Nếu có từ 3 quyết định cùng loại việc mà Board chọn giống nhau (kể cả lần này):
 1. Gửi Board một card `request_confirmation` trên task của mình. Nội dung: đề xuất thành quy tắc chung, nguyên văn từng quyết định kèm link, và phạm vi đề xuất (loại việc, điều kiện, ngưỡng).
-2. Board đồng ý: viết D-file theo mục 7. Từ đó agent tự quyết loại việc đó.
+2. Board đồng ý: viết D-file theo `board-memory` mục 4. Từ đó agent tự quyết loại việc đó.
 3. Board từ chối: ghi `kind:board-decision` «không giao quyền cho <loại việc>», rồi không đề xuất lại loại đó.
-
-**Prompt tóm tắt (cố định, không sửa):**
-
-```text
-Bạn tóm tắt một mục để lưu vào bộ nhớ dài hạn của công ty. Chỉ dùng INPUT bên dưới.
-Quy tắc:
-- Không thêm thông tin, suy luận, lời khuyên, đánh giá hay bối cảnh không có trong INPUT.
-- Giữ nguyên chính xác mọi số, tên, ngày, số tiền, tên máy, tên dự án, mã task.
-- Dòng 2 chỉ chứa lời Board chép nguyên văn từ INPUT, đặt trong «». Được lược bằng … để vừa độ dài, không được diễn đạt lại hay thêm tên, máy, cơ chế. Câu trả lời trên card thì ghi phương án Board chọn: Board chọn «<nhãn phương án>» cho «<câu hỏi, rút gọn>».
-- Viết đúng mẫu dưới, tối đa 3 dòng, tổng cộng không quá 300 ký tự:
-  <YYYY-MM-DD> · <Project hoặc Công ty> · <HOA-n hoặc D-xxxx> · <Lệnh | Quyết định | Bài học>
-  Board: «<lời Board nguyên văn>»
-  Lý do: <chỉ khi INPUT có lý do của Board> · Giao: <agent, nếu INPUT nêu> · Thay: <doc-id, nếu có> · Chi tiết và giới hạn: <D-xxxx, nếu NGUỒN là D-file>
-- Bỏ dòng thứ 3 nếu không có trường nào. Bài học của agent thì dòng 2 bắt đầu bằng "Bài học (agent <tên> đề xuất):" thay cho "Board:".
-- Nếu INPUT không chứa gì dùng lại được về sau (ý muốn, ưu tiên, ràng buộc, quy tắc, lựa chọn giữa các phương án, sửa cách làm), chỉ trả về đúng một từ: SKIP
-NGÀY: <YYYY-MM-DD>   PROJECT: <tên>   NGUỒN: <HOA-n hoặc D-xxxx>
-INPUT:
-<<<
-<dán nguyên văn>
->>>
-```
 
 ## 7. decisions/
 
-- Quyết định của Board áp dụng rộng hơn một task: `decisions/D-xxxx-<slug>.md` trong ngày (D-0002), trích nguyên văn lời Board, PR vào repo handbook. Repo public: không IP, secret, tên khách. Quyết định trong một task chỉ ghi Hindsight.
-- PR chỉ thêm hoặc sửa file trong `decisions/`: branch `chore/<slug>`, ThuKy tự merge sau khi quét `secret-hygiene` (D-0021 mục 2 giao ThuKy ghi `decisions/`). PR chạm `rules.md` hay `skills/`: chờ Board (`security-baseline` mục 1).
-- Suy luận của Thư ký ghi "Thư ký suy ra", không bao giờ thành quyết định của Board.
+Theo `board-memory` mục 4. Suy luận của Thư ký ghi "Thư ký suy ra", không bao giờ thành quyết định của Board.

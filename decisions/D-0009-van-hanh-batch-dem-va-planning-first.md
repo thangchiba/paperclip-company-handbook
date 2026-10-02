@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty
 - **Nguồn:** Chỉ thị Board trên HOA-26 (comment 2026-09-17)
 
-*(Sửa bởi D-0021: mục 3, phần ChiefOfStaff hết hiệu lực; ghi chú áp dụng, ThuKy không có `agents:configure`, đổi config agent do Board làm.)*
+*(Sửa bởi D-0021: mục 3, phần ChiefOfStaff cũ (đã bỏ) hết hiệu lực; ghi chú áp dụng, Thư ký (ChiefOfStaff mới, D-0022) không có `agents:configure`, đổi config agent do Board làm.)*
 
 ## Bối cảnh
 

@@ -5,7 +5,7 @@
 - **Nguồn:** Board trả lời card "Hoang Auth: agent cần quyền tạo client trên Keycloak" trên HOA-316 (22:51 JST). CTO ghi lại.
 - **Sửa đổi:** Không. Quy tắc ngày 2026-09-29 "không cấp SSH vào MacbookServer cho dev" vẫn áp dụng cho các agent khác.
 
-*(Sửa bởi D-0021 mục 8a, lời Board «Infra, dev, thư kí, tức là các agent sẽ gần như bình đẳng, chỉ là quản lí bộ skill khác nhau. Và đều tuân thủ security»: người được SSH là InfraEngineer, FullstackDev và ThuKy, cùng key, cùng điều kiện ở mục Quyết định. Quy tắc 29/09 "không cấp SSH vào MacbookServer cho dev" không còn áp dụng cho FullstackDev; QA, ProductManager, MarketingManager, ContentCreator vẫn không SSH.)*
+*(Sửa bởi D-0021 mục 8a, lời Board «Infra, dev, thư kí, tức là các agent sẽ gần như bình đẳng, chỉ là quản lí bộ skill khác nhau. Và đều tuân thủ security»: người được SSH là InfraEngineer, FullstackDev và ChiefOfStaff, cùng key, cùng điều kiện ở mục Quyết định. Quy tắc 29/09 "không cấp SSH vào MacbookServer cho dev" không còn áp dụng cho FullstackDev; QA, ProductManager, MarketingManager, ContentCreator vẫn không SSH.)*
 
 ## Bối cảnh
 

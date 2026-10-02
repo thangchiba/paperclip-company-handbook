@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 2 (HOA-2)
 
-*(Sửa bởi D-0021: Thư ký (ThuKy) ghi `decisions/` và Hindsight; vòng lặp mục 1, chỉ quyết định áp dụng rộng hơn một task mới thành D-file, quyết định trong một task chỉ ghi Hindsight; mục 4 (rà soát tối Chủ nhật) hết hiệu lực, ChiefOfStaff đã bỏ, không có routine rà soát hằng tuần; câu cuối, agent không đọc `rules.md` đầu mỗi run, quy tắc đến qua khối "Decision authority" trong `AGENTS.md` và skill `security-baseline`, `operating-model`.)*
+*(Sửa bởi D-0021 và D-0022: agent nhận lệnh hay quyết định trực tiếp từ Board ghi `decisions/` và Hindsight theo `board-memory`; vòng lặp mục 1, chỉ quyết định áp dụng rộng hơn một task mới thành D-file, quyết định trong một task chỉ ghi Hindsight; mục 4 (rà soát tối Chủ nhật) hết hiệu lực, ChiefOfStaff đã bỏ, không có routine rà soát hằng tuần; câu cuối, agent không đọc `rules.md` đầu mỗi run, quy tắc đến qua khối "Decision authority" trong `AGENTS.md` và skill `security-baseline`, `operating-model`.)*
 
 ## Bối cảnh
 

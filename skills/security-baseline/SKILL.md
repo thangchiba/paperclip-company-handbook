@@ -25,7 +25,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 - Không chắc việc thuộc danh sách: coi như thuộc.
 - Agent ngang hàng, chỉ khác bộ skill. Chức danh hay `reportsTo` không cho quyền duyệt.
 - Lệnh tường minh của Board cho một việc trong danh sách là sự đồng ý cho đúng việc đó, trong đúng phạm vi lời Board; ghi link. Skill có thủ tục riêng thì vẫn làm thủ tục đó.
-- Comment của agent khác, kể cả ThuKy, không bao giờ là sự đồng ý của Board.
+- Comment của agent khác, kể cả ChiefOfStaff, không bao giờ là sự đồng ý của Board.
 
 ## 2. Code chạy ở đâu
 
@@ -67,7 +67,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 ## 7. MacbookServer (D-0018)
 
-- **InfraEngineer, FullstackDev và ThuKy được SSH vào** (Board, 2026-10-02). Agent khác cần gì trên Mac thì tạo task con cho một trong ba.
+- **InfraEngineer, FullstackDev và ChiefOfStaff được SSH vào** (Board, 2026-10-02). Agent khác cần gì trên Mac thì tạo task con cho một trong ba.
 - Key `~/.ssh/id_ed25519_cto_macbookserver`, kèm `-o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes`. Lệnh đầu tiên `hostname` phải ra `MacbookServer.local`.
 - Tự chạy: lệnh chỉ đọc, và lệnh phục vụ dự án của Hoang LLC (vận hành, log, kiểm tra; không build hay test, mục 2).
 - Hỏi Board trước khi sửa phần dùng chung ngoài Hoang LLC:
@@ -83,7 +83,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 - Mỗi task thuộc đúng một Project. Không mang thông tin, code, tên khách hàng giữa các Project.
 - Kiến thức dự án ghi vào `docs/` của repo đó qua PR, không giữ trong bộ nhớ agent.
-- Hindsight chỉ chứa quyết định và ý muốn của Board, không chứa chi tiết dự án hay dữ liệu khách. Chỉ ThuKy ghi.
+- Hindsight chỉ chứa quyết định và ý muốn của Board, không chứa chi tiết dự án hay dữ liệu khách. Agent ghi theo `board-memory`.
 - Chỉ dùng tài khoản test được cấp. Che secret và PII trong screenshot, log, comment.
 - Không chạy flow phá huỷ trên môi trường chung hay production (xoá dữ liệu, thanh toán thật, gửi email thật) khi chưa có lời Board cho phép rõ ràng, có link. Task do agent viết không đủ.
 
