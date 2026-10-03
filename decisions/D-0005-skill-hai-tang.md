@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty (quản lý skill + cấu hình env)
 - **Nguồn:** Chỉ thị Board v0.1, mục 5 (HOA-2)
 
-*(Sửa bởi D-0021: mục 3, danh sách skill và nơi gắn theo `skills/README.md` v0.2.)*
+*(Gọn 2026-10-03, HOA-418: mục 3 thay danh sách v0.1 cũ bằng chỗ chứa danh sách hiện hành (D-0021); mục 5 ghi luôn phần AWS đã sửa theo D-0012. Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -21,6 +21,6 @@ Chọn B:
 
 1. **Tầng project:** giữ nguyên `.claude/skills` trong repo của project, không copy vào Paperclip.
 2. **Tầng công ty:** skill dùng chung theo vai, nguồn sự thật là `company-handbook/skills/`, import vào thư viện Paperclip và gắn cho agent tương ứng.
-3. Danh sách skill công ty v0.1 (CEO đề xuất, tối thiểu): `verify-and-report`, `needs-decision-protocol`, `pr-standard`, `terraform-plan-only`, `content-draft-protocol`, `daily-brief`.
+3. Danh sách skill công ty và nơi gắn: `skills/README.md`.
 4. Mỗi skill chỉ có một nguồn. Skill kéo từ GitHub/skills.sh phải ghim theo commit.
-5. Env theo project: mỗi Project khai báo biến môi trường riêng trong Paperclip (AWS_PROFILE, region, Terraform backend/workspace, tên môi trường). Không có giá trị secret nào trong Paperclip hay trong prompt; secret nằm trong profile/secret manager trên máy chủ theo từng khách, agent chỉ tham chiếu tên. *(Sửa bởi D-0012: với AWS, agent chỉ dùng credential Paperclip inject vào env của run; không dùng `AWS_PROFILE` hay profile trên máy chủ.)*
+5. Env theo project: mỗi Project khai báo biến môi trường riêng trong Paperclip (region, Terraform backend/workspace, tên môi trường). Không có giá trị secret nào trong Paperclip hay trong prompt; secret nằm trong profile/secret manager trên máy chủ theo từng khách, agent chỉ tham chiếu tên. Với AWS, agent chỉ dùng credential Paperclip inject vào env của run; không dùng `AWS_PROFILE` hay profile trên máy chủ (D-0012).

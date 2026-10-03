@@ -7,7 +7,7 @@
 - **Cập nhật:** 2026-09-28, Pro5: lần deploy do merge kéo theo tính vào mức `auto`, tới trước launch M1 (Board trả lời card trên HOA-216). Xem mục "Cập nhật 2026-09-28 — Pro5".
 - **Cập nhật:** 2026-09-28, Figure: lần deploy do merge vào odeku `main` kéo theo tính vào mức `auto`, tới trước khi có đơn thật (Board trả lời card trên HOA-215). Xem mục "Cập nhật 2026-09-28 — Figure".
 
-*(Sửa bởi D-0021 mục 8b, 8f, theo lời Board «Dev và Infra tự do merge code vào. Chỉ những task quan trọng thì phát hành PR để tôi review.»: bỏ điều kiện a và kiểm soát bù "CTO review mọi PR" của Pro5. FullstackDev và InfraEngineer tự merge khi đủ điều kiện b, c; task quan trọng mở PR cho Board review. Merge vẫn kéo theo deploy như hai mục cập nhật bên dưới. Phần kỹ thuật của phương án B (Figure): InfraEngineer; việc "CEO hỏi lại Board": ChiefOfStaff. Apply hạ tầng Pro5: D-0021 mục 12.)*
+*(Gọn 2026-10-03, HOA-418: bỏ điều kiện a (review của agent khác) cùng phần "Cách áp dụng điều kiện a", bỏ kiểm soát bù "CTO review mọi PR" của Pro5 và hai việc một lần đã xong; ghi luôn người làm theo D-0021 mục 8b, 8f, 12, theo lời Board «Dev và Infra tự do merge code vào. Chỉ những task quan trọng thì phát hành PR để tôi review.» Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -29,28 +29,20 @@ Pro5:
 
 ## Quyết định
 
-1. **Figure và Pro5: mức `auto` cho merge PR vào `main`.** Agent tự merge, Board không duyệt từng PR; agent báo cáo sau theo khung ①②③. Áp dụng cho PR code, test và tài liệu trong repo. Chỉ merge khi đủ cả 3 điều kiện:
-   - a. Có review của một agent khác người viết PR (thường là CTO).
+1. **Figure và Pro5: mức `auto` cho merge PR vào `main`.** FullstackDev và InfraEngineer tự merge PR của chính mình (D-0021 mục 8b), Board không duyệt từng PR; agent báo cáo sau theo khung ①②③. Task quan trọng thì mở PR cho Board review (`security-baseline` mục 5). Áp dụng cho PR code, test và tài liệu trong repo. Chỉ merge khi đủ điều kiện b và c:
+   - a. *(Đã bỏ: review của agent khác, D-0021 mục 8b.)*
    - b. Kiểm tra xanh. Figure: `scripts/verify.sh` PASS trên head của PR (odeku không có CI). Pro5: mọi check trên PR xanh (gồm `plan` khi PR chạm `infra/**`).
    - c. GitGuardian xanh.
 2. **Vẫn cần Board duyệt, không đổi:**
    - Deploy production, đăng nội dung công khai, gửi khách hàng. Riêng Pro5: lần deploy do merge kéo theo tính vào mức `auto`, tới trước launch M1 (mục "Cập nhật 2026-09-28 — Pro5"). Riêng Figure: lần deploy do merge vào odeku `main` kéo theo tính vào mức `auto`, tới trước khi có đơn thật (mục "Cập nhật 2026-09-28 — Figure").
    - Mọi hàng "Board duyệt" cứng ở rules.md mục 3, kể cả sửa file hướng dẫn agent trong repo (`SISYO.md`, `CLAUDE.md`). PR chạm các phần này vẫn cần card Board riêng (vd odeku #9).
-   - Pro5: apply hạ tầng theo D-0011 (Board duyệt từng lần apply). Merge PR `infra/**` không apply gì.
-3. **Merge không kéo theo deploy.** Mức `auto` dựa trên thực tế lúc quyết: merge không deploy (odeku không có GitHub Actions; Pro5 chỉ có CI chạy `plan`). Vì deploy production vẫn cần Board duyệt, PR nào làm merge tự deploy production (vd cài `.github/workflows/app-deploy.yml` của Pro5, hoặc thêm workflow deploy cho odeku) thì cần card Board, và CEO hỏi lại Board mức merge của Project đó trước khi cài. Pro5 đã hỏi lại trên HOA-216, xem mục "Cập nhật 2026-09-28 — Pro5". Với odeku, thực tế "merge không deploy" sai ngay từ đầu vì có webhook trên MacbookServer; Board chọn lại trên HOA-215, xem mục "Cập nhật 2026-09-28 — Figure".
-
-## Cách áp dụng điều kiện a
-
-Theo đề xuất của CTO trên HOA-207. Hai điểm này chỉ làm chặt thêm, không nới điều kiện Board chọn:
-
-- "Người viết" xác định theo Paperclip, không theo GitHub: mọi agent push bằng cùng tài khoản `thangchiba`, nên GitHub không phân biệt được. Người viết là agent đã làm issue Paperclip của PR và push commit, xem theo lịch sử issue (lúc review, issue có thể đã chuyển cho reviewer).
-- Reviewer tự push commit sửa vào PR thì thành đồng tác giả. Người viết gốc hoặc một agent thứ ba phải xem các commit đó trước khi merge.
+   - Pro5: apply hạ tầng theo D-0011; tới launch M1 theo D-0021 mục 12. Merge PR `infra/**` không apply gì.
+3. **PR làm merge tự deploy production cần card Board.** Lúc quyết, mức `auto` dựa trên thực tế merge không deploy. PR nào làm merge tự deploy production (vd cài `.github/workflows/app-deploy.yml` của Pro5, hoặc thêm workflow deploy cho odeku) thì cần card Board, và Thư ký hỏi lại Board mức merge của Project đó trước khi cài. Hiện Pro5 và Figure đều merge = deploy, theo lựa chọn của Board trên HOA-216 và HOA-215 (hai mục cập nhật bên dưới).
 
 ## Hệ quả
 
 - Mô tả Project Figure và Pro5 trên Paperclip ghi mức theo quyết định này.
-- CTO được báo trên HOA-207: các PR odeku đang chờ merge theo mức mới khi đủ điều kiện.
-- `handbook/rules.md` không đổi: mục 7 đã cho mỗi Project tự khai báo mức. Nếu thêm Project dùng cùng mẫu (merge `auto`; deploy, nội dung, khách hàng `approve`), CEO đề xuất đưa mẫu này vào mục 7 ở buổi rà soát Chủ nhật (D-0002).
+- `handbook/rules.md` không đổi: mục 7 đã cho mỗi Project tự khai báo mức.
 
 ## Cập nhật 2026-09-28 — Pro5: merge kéo theo deploy (HOA-216)
 
@@ -69,7 +61,7 @@ Bước 3 của HOA-135 chép `ci/app-deploy.yml` vào `.github/workflows/`. T�
 ### Quyết định
 
 - **Pro5 cài `app-deploy` như hiện có**, không sửa trigger.
-- **Mức `auto` của Pro5 tính luôn lần deploy production mà merge kéo theo.** Điều kiện merge vẫn là a–c của mục 1 ở trên; không thêm card cho PR code app. Kiểm soát bù: CTO review mọi PR, và mỗi lần deploy có email cảnh báo (HOA-148). Rủi ro Board chấp nhận: PR code app nào merge cũng lên prod ngay, Board không xem trước.
+- **Mức `auto` của Pro5 tính luôn lần deploy production mà merge kéo theo.** Điều kiện merge vẫn là b, c của mục 1 ở trên; không thêm card cho PR code app. Kiểm soát bù: mỗi lần deploy có email cảnh báo (HOA-148). Rủi ro Board chấp nhận: PR code app nào merge cũng lên prod ngay, Board không xem trước.
 - **Chỉ tới trước launch M1.** Trước khi bỏ `noindex` (HOA-194), Pro5 chuyển sang phương án B. Từ đó merge không deploy nữa, và deploy production lại cần Board duyệt như mục 2 ở trên.
 - **Không đổi:** Figure có mục cập nhật riêng ở dưới (HOA-215). Với Pro5, phần còn lại của mục 2 ở trên giữ nguyên, kể cả apply hạ tầng theo D-0011.
 
@@ -78,7 +70,6 @@ Bước 3 của HOA-135 chép `ci/app-deploy.yml` vào `.github/workflows/`. T�
 - Mô tả Project Pro5 trên Paperclip ghi mức mới.
 - Bước 3 của HOA-135 làm theo mô tả hiện có, không chờ PR sửa workflow.
 - HOA-194 (go-live M1) có thêm bước chuyển sang phương án B, làm trước khi bỏ `noindex`.
-- CTO được báo trên HOA-216.
 
 ## Cập nhật 2026-09-28 — Figure: merge kéo theo deploy (HOA-215)
 
@@ -97,7 +88,7 @@ Mục 3 ở trên cho rằng merge odeku không deploy vì odeku không có GitH
 ### Quyết định
 
 - **Giữ webhook**, không sửa webhook hay `deploy-odeku.sh`. Mỗi push vào odeku `main` vẫn tự deploy production.
-- **Mức `auto` của Figure tính luôn lần deploy production mà merge kéo theo.** Điều kiện merge vẫn là a–c của mục 1 ở trên. Rủi ro Board chấp nhận:
+- **Mức `auto` của Figure tính luôn lần deploy production mà merge kéo theo.** Điều kiện merge vẫn là b, c của mục 1 ở trên. Rủi ro Board chấp nhận:
   - Mỗi PR, kể cả PR chỉ sửa docs, đều build lại và restart prod.
   - PR sửa nội dung web lên site ngay, Board không xem trước.
 - **Người merge kiểm deploy rồi báo sau.** Sau mỗi merge:
@@ -110,8 +101,7 @@ Mục 3 ở trên cho rằng merge odeku không deploy vì odeku không có GitH
 ### Hệ quả
 
 - Mô tả Project Figure trên Paperclip ghi mức mới, thay cho dòng tạm dừng merge odeku.
-- CTO merge tiếp #17, #11, #16 theo HOA-214 khi đủ điều kiện, và làm bước kiểm deploy ở trên sau mỗi lần merge.
-- Khi Figure chuẩn bị nhận đơn thật, CEO đưa việc chuyển sang B vào quyết định go-live. CTO làm phần kỹ thuật của B:
+- Khi Figure chuẩn bị nhận đơn thật, Thư ký (ChiefOfStaff) đưa việc chuyển sang B vào quyết định go-live. InfraEngineer làm phần kỹ thuật của B:
   - Sửa 1 dòng `config.json` của webhook, rồi restart webhook.
   - Mở PR đổi `deploy-odeku.sh` sang pull `release`.
   - Tạo nhánh `release` tại commit đang chạy trên prod.

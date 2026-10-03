@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 2 (HOA-2)
 
-*(Sửa bởi D-0021 và D-0022: agent nhận lệnh hay quyết định trực tiếp từ Board ghi `decisions/` và Hindsight theo `board-memory`; vòng lặp mục 1, chỉ quyết định áp dụng rộng hơn một task mới thành D-file, quyết định trong một task chỉ ghi Hindsight; mục 4 (rà soát tối Chủ nhật) hết hiệu lực, ChiefOfStaff đã bỏ, không có routine rà soát hằng tuần; câu cuối, agent không đọc `rules.md` đầu mỗi run, quy tắc đến qua khối "Decision authority" trong `AGENTS.md` và skill `security-baseline`, `operating-model`.)*
+*(Gọn 2026-10-03, HOA-418: mục 1 và câu cuối ghi luôn bản đã sửa theo D-0021, D-0022; bỏ mục 4 (rà soát tối Chủ nhật), hết hiệu lực theo D-0021. Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -27,9 +27,9 @@ Chọn B. Project `company-handbook` gắn repo git (cwd trên máy chủ), cấ
 
 Vòng lặp bắt buộc:
 
-1. Board quyết → trong cùng ngày ghi `decisions/D-xxxx.md`.
+1. Board quyết một việc áp dụng rộng hơn một task → agent nhận quyết định trực tiếp từ Board ghi `decisions/D-xxxx-<slug>.md` trong ngày và ghi Hindsight theo `board-memory`. Quyết định trong một task chỉ ghi Hindsight.
 2. Quyết định có tính khái quát → đề xuất sửa `rules.md` hoặc SKILL.md tương ứng dưới dạng approval card kèm diff. Board duyệt → merge và cập nhật skill trong thư viện Paperclip.
 3. Không bao giờ sửa rules/skills mà không có approval của Board. Không bao giờ ghi quyết định Board chưa nói.
-4. Tối Chủ nhật: rà lại decisions trong tuần, gộp trùng, đề xuất nâng thành rule.
+4. *(Đã bỏ: rà soát tối Chủ nhật, D-0021.)*
 
-Mọi agent đọc `handbook/rules.md` ở đầu mỗi run (đưa vào instruction của từng agent).
+Agent không đọc `handbook/rules.md` đầu mỗi run: quy tắc đến qua khối "Decision authority" trong `AGENTS.md` và skill `security-baseline`, `operating-model` (D-0021).
