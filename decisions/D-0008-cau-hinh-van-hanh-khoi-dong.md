@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty
 - **Nguồn:** Board trả lời card `ask_user_questions` trên HOA-2
 
-*(Sửa bởi D-0021: mục 3 hết hiệu lực; ChiefOfStaff đã bỏ và daily brief đã huỷ (card HOA-82).)*
+*(Gọn 2026-10-03, HOA-418: bỏ mục 3 (lịch heartbeat Thư ký cũ), hết hiệu lực theo D-0021. Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -14,11 +14,11 @@ CEO gửi 5 câu hỏi cấu hình vận hành (repo handbook, vendor QA, lịch
 
 1. **Repo handbook:** remote GitHub `thangchiba/paperclip-company-handbook` (đã cấu hình, origin https).
 2. **Vendor QA:** `codex_local` — khác vendor với dev (Claude) để review chéo.
-3. **Lịch heartbeat Thư ký (ChiefOfStaff):** 09:00, 12:00, 18:00 mỗi ngày (JST).
+3. *(Đã bỏ: lịch heartbeat Thư ký cũ, D-0021.)*
 4. **Budget:** chạy local adapter, không đặt trần chi phí per-agent ở giai đoạn này.
 5. **Timezone chuẩn công ty:** Asia/Tokyo (JST).
 
 ## Ghi chú áp dụng
 
-- QA và ChiefOfStaff đã được tuyển đúng vendor codex_local (HOA-4).
+- QA đã được tuyển đúng vendor codex_local (HOA-4).
 - Các quyết định 2–5 xác nhận đề xuất mặc định của CEO; không cần hỏi lại.

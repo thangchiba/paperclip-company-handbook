@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 1 (HOA-2)
 
-*(Sửa bởi D-0021: mục 2, thay "một card buổi sáng, một card buổi tối" bằng: mỗi agent hỏi Board bằng card `human_only` trên task của mình, mỗi task tối đa một card đang chờ (`operating-model`); mục 4, tra cả Hindsight.)*
+*(Gọn 2026-10-03, HOA-418: mục 2 và 4 ghi luôn bản đã sửa theo D-0021, bỏ cách hỏi cũ "một card buổi sáng, một card buổi tối"; mục 5 chỉ tới danh sách hiện hành. Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -21,7 +21,7 @@ Giai đoạn khởi động, các agent cần nhiều quyết định từ Board
 Chọn B:
 
 1. Mỗi câu hỏi phải có: bối cảnh 1–2 dòng, phương án A/B/C, đề xuất của agent và lý do.
-2. Gom câu hỏi theo lô: một card buổi sáng, một card buổi tối. Không hỏi lắt nhắt.
+2. Mỗi agent hỏi Board bằng card `human_only` trên task của mình, mỗi task tối đa một card đang chờ (`operating-model`). Không hỏi lắt nhắt.
 3. Hỏi không được chặn việc khác: task bị vướng thì gắn `needs-decision`, chuyển sang task khác ngay.
-4. Không hỏi lại điều Board đã quyết. Trước khi hỏi, tra `decisions/`. Tình huống chỉ khác chút ít so với quyết định cũ → tự áp dụng và ghi chú "áp dụng theo D-xxxx".
-5. Board cần đề xuất và quyết định trong phạm vi được giao, không phải xin phép mọi thứ. Phạm vi cần Board duyệt nằm ở Approval matrix (`handbook/rules.md`, mục 6 chỉ thị). Ngoài phạm vi đó: tự quyết và báo cáo.
+4. Không hỏi lại điều Board đã quyết. Trước khi hỏi, tra `decisions/` và Hindsight. Tình huống chỉ khác chút ít so với quyết định cũ → tự áp dụng và ghi chú "áp dụng theo D-xxxx".
+5. Board cần đề xuất và quyết định trong phạm vi được giao, không phải xin phép mọi thứ. Phạm vi cần Board duyệt nằm ở `security-baseline` mục 1 (`handbook/rules.md` mục 3). Ngoài phạm vi đó: tự quyết và báo cáo.

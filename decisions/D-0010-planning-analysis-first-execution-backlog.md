@@ -3,9 +3,9 @@
 - **Ngày:** 2026-09-18 (JST)
 - **Phạm vi:** Toàn công ty
 - **Nguồn:** Chỉ đạo Board tại HOA-36 và xác nhận áp dụng cho Daily brief tại HOA-8
-- **Thay thế:** Phần “Engineer chạy batch ban đêm” và phần tự động dồn thực thi vào ban đêm của D-0009
+- **Thay thế:** D-0009 (batch thực thi ban đêm). D-0009 đã bỏ khỏi `decisions/` ngày 2026-10-03 (HOA-418).
 
-*(Sửa bởi D-0021: mục 4 hết hiệu lực vì daily brief đã huỷ (card HOA-82); ChiefOfStaff báo cáo theo từng lệnh.)*
+*(Gọn 2026-10-03, HOA-418: bỏ mục 4 (daily brief), hết hiệu lực theo D-0021. Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -23,10 +23,10 @@ Chọn phương án 2:
 1. Hoạt động định kỳ ưu tiên phân tích thị trường, lập kế hoạch triển khai tiếp theo, lập lịch và đưa khuyến nghị theo chuyên môn từng vai trò.
 2. Có thể tạo sẵn task thực thi, nhưng giữ ở trạng thái `backlog`; không tự động triển khai.
 3. User chủ động kéo task về thực hiện hoặc yêu cầu automation sau.
-4. Daily brief buổi sáng nêu kế hoạch tiếp theo theo từng Project và hỏi Board phần nào nên chuyển sang triển khai.
+4. *(Đã bỏ: daily brief đã huỷ, D-0021.)*
 
 ## Phạm vi áp dụng
 
 - Áp dụng cho toàn bộ agent và Project của Hoang LLC kể từ ngày quyết định.
-- Các phần khác của D-0009 (cấu trúc issue cha/subtask, lưu tri thức bền, giới hạn mention) vẫn có hiệu lực.
+- Phần còn dùng của D-0009 (cấu trúc issue cha/subtask, lưu tri thức bền) nằm ở `operating-model` mục 6–8.
 - Việc cập nhật `handbook/rules.md` và `skills/` để phản ánh quyết định này phải đi qua approval riêng của Board.

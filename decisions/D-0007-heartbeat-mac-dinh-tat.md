@@ -4,7 +4,7 @@
 - **Phạm vi:** Toàn công ty (mọi agent)
 - **Nguồn:** Chỉ thị Board v0.1, mục 3 và 6 (HOA-2)
 
-*(Sửa bởi D-0021: mục 2 hết hiệu lực; ChiefOfStaff đã bỏ và daily brief đã huỷ (card HOA-82), nên không còn heartbeat ngoại lệ.)*
+*(Gọn 2026-10-03, HOA-418: bỏ mục 2 (heartbeat của Thư ký cũ, hết hiệu lực theo D-0021) và mục 3 (đề xuất budget theo agent, thay bởi D-0008 mục 4). Bản cũ xem git log.)*
 
 ## Bối cảnh
 
@@ -20,5 +20,5 @@ Heartbeat theo giờ tốn budget ngay cả khi không có việc. Đa số agen
 Chọn B:
 
 1. Heartbeat timer tắt mặc định cho mọi agent; agent chỉ wake khi có việc (assign, comment, blocker resolved…).
-2. Ngoại lệ duy nhất hiện tại: **Thư ký (Chief of Staff)** có heartbeat theo giờ để chạy Morning brief 07:00 và tổng kết 18:00 (chi tiết vai Thư ký theo mục 3 chỉ thị; instruction phải được Board duyệt trước khi kích hoạt).
-3. Budget tháng theo agent: CEO đề xuất con số trong `handbook/rules.md` v0.1 (chờ Board duyệt).
+2. *(Đã bỏ: heartbeat theo giờ của Thư ký cũ, D-0021.)*
+3. *(Đã bỏ: đề xuất budget theo agent; Board chọn không đặt trần per-agent, D-0008 mục 4.)*
