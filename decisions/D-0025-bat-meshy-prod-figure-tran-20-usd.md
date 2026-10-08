@@ -29,5 +29,5 @@ Câu hỏi trên card: «Bật Meshy (tạo model 3D thật) trên prod Odeku kh
 
 ## Hệ quả
 
-- Agent được tạo đơn thử bằng Meshy thật trên prod, trong trần, chỉ dùng ảnh test.
-- Tăng trần Meshy là quyết định chi phí mới, cần Board.
+- Task thử đã chạy trên HOA-463.
+- Theo D-0014, tăng trần là quyết định chi phí mới, cần Board. FullstackDev suy ra điều này cũng áp dụng cho trần Meshy.
