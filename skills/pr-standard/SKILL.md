@@ -1,6 +1,6 @@
 ---
 name: pr-standard
-description: Chuẩn branch, commit, PR và merge của công ty - FullstackDev và InfraEngineer tự merge, việc quan trọng thì mở PR cho Board review với mô tả ngắn gọn theo format dưới, kiểm deploy sau merge. Dùng khi thay đổi code ở bất kỳ repo nào.
+description: Chuẩn branch, commit, PR, merge và GitHub Actions (runner tự host win-dev, GitHub-hosted chỉ để báo tin) của công ty - FullstackDev và InfraEngineer tự merge, việc quan trọng thì mở PR cho Board review với mô tả ngắn gọn theo format dưới, kiểm deploy sau merge. Dùng khi thay đổi code ở bất kỳ repo nào, và khi viết hay sửa workflow GitHub Actions.
 ---
 
 # pr-standard
@@ -34,6 +34,17 @@ Lời Board (2026-10-02, D-0021): «Dev và Infra tự do merge code vào. Chỉ
 
 - **Figure:** merge vào odeku `main` là deploy production, tới khi có đơn thật (`security-baseline` mục 5). Người merge xem log deploy trên MacbookServer (runbook `docs/06_infra/deploy.md`, SSH theo `security-baseline` mục 7), kiểm `https://neokun.com/healthz` trả `ok` với đúng SHA ngắn của commit merge, rồi báo trên task.
 - **Pro5:** merge vào `main` là deploy production, tới launch M1, trừ PR chỉ sửa `infra/**` hoặc `*.md`. Merge PR `infra/**` không apply gì; apply theo `terraform-plan-only`.
+
+## 4. GitHub Actions (D-0026)
+
+Phút GitHub Actions của repo private là tiền. Build, test, plan, deploy chạy trên máy dev qua runner tự host; GitHub-hosted chỉ để báo tin.
+- Job build, test, lint, `verify.sh`, `terraform plan`, deploy: `runs-on: [self-hosted, win-dev]`.
+- Chỉ job báo tin (Telegram, comment) được để `runs-on: ubuntu-latest`, và phải nhẹ: không `npm ci`, không build, `timeout-minutes` ≤ 5.
+- Service container (vd DynamoDB Local) dùng cổng do Docker chọn (`ports: ["8000"]`), đọc lại bằng `${{ job.services.<tên>.ports['8000'] }}` ở `env` của step, để nhiều runner chạy song song.
+- Runner giữ workspace giữa các lần chạy: không giả định thư mục sạch; dọn file tạm trong `$RUNNER_TEMP`.
+- Repo chưa có runner `win-dev`: workflow mới vẫn viết `self-hosted`, và báo Board đăng ký runner (`~/Workspace/LanServer/ci-runner/register.sh owner/repo N` trên MacbookServer). Không tự đổi sang `ubuntu-latest` cho chạy được.
+- Không thêm trigger chạy định kỳ (`schedule`) hay ma trận lớn khi Board chưa đồng ý.
+- Sửa `.github/workflows/` là sửa đường deploy: theo mục 2, việc quan trọng.
 
 ## Cấm
 
