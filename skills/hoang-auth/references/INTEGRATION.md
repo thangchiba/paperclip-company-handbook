@@ -16,7 +16,7 @@ Issuer:            https://auth.hoang.jp/realms/hoang
 Token Endpoint:    https://auth.hoang.jp/realms/hoang/protocol/openid-connect/token
 Logout Endpoint:   https://auth.hoang.jp/realms/hoang/protocol/openid-connect/logout
 Admin Console:     chỉ dùng trong LAN (Board quyết 02/10/2026, HOA-316)
-Admin .env:        ~/Workspace/OSS/keycloak/.env
+Admin .env:        ~/Workspace/Hoang/auth/.env
 ```
 
 ---
@@ -29,7 +29,7 @@ Mỗi app cần 1 client riêng. Có 2 cách:
 
 ```bash
 # 1. Lấy admin token (chạy trên MacbookServer). Mật khẩu đi qua stdin, không nằm trong argv (D-0015).
-cd ~/Workspace/OSS/keycloak
+cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
 KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
   | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
@@ -103,7 +103,7 @@ Ví dụ: diagram-editor, note-app, chat-app, excalidraw
 
 ### Sau khi tạo xong, cập nhật CLIENTS.md
 
-Thêm 1 dòng vào bảng trong `~/Workspace/OSS/keycloak/docs/CLIENTS.md` trên MacbookServer (file có secret: chỉ thêm dòng, không `cat` cả file, không chép ra ngoài).
+Thêm 1 dòng vào bảng trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên MacbookServer (file có secret: chỉ thêm dòng, không `cat` cả file, không chép ra ngoài).
 
 ---
 

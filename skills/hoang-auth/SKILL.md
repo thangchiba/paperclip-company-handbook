@@ -6,7 +6,7 @@ description: Tích hợp đăng nhập Hoang Auth (Keycloak SSO tại auth.hoang
 # hoang-auth — Tích hợp Hoang Auth (Keycloak SSO)
 
 Nguồn: skill `integrate-auth` của Board trên MacbookServer (`~/.claude/commands/integrate-auth.md`) và bộ docs
-`~/Workspace/OSS/keycloak/docs/`, chép lên đây đã bỏ secret (D-0018, HOA-316). Secret, mật khẩu test và danh sách
+`~/Workspace/Hoang/auth/docs/`, chép lên đây đã bỏ secret (D-0018, HOA-316). Secret, mật khẩu test và danh sách
 client chỉ nằm trên Mac.
 
 Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự án một client riêng**, không tự làm auth.
@@ -20,9 +20,9 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 | Issuer | `https://auth.hoang.jp/realms/hoang` |
 | Discovery | `https://auth.hoang.jp/realms/hoang/.well-known/openid-configuration` |
 | JWKS | `https://auth.hoang.jp/realms/hoang/protocol/openid-connect/certs` |
-| Chạy ở | MacbookServer, Docker Compose (`~/Workspace/OSS/keycloak`), cổng local `26201` |
-| Credential admin | `~/Workspace/OSS/keycloak/.env` trên Mac. Chỉ dùng trong lệnh, không in, không chép ra khỏi Mac |
-| Danh sách client | `~/Workspace/OSS/keycloak/docs/CLIENTS.md` trên Mac. **File có secret: không `cat` cả file** |
+| Chạy ở | MacbookServer, Docker Compose (`~/Workspace/Hoang/auth`), cổng local `26201` |
+| Credential admin | `~/Workspace/Hoang/auth/.env` trên Mac. Chỉ dùng trong lệnh, không in, không chép ra khỏi Mac |
+| Danh sách client | `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên Mac. **File có secret: không `cat` cả file** |
 | Docs tích hợp | `references/` cạnh file này: `INTEGRATION.md` (tổng quan), `INTEGRATION-BACKEND.md`, `INTEGRATION-FRONTEND.md` |
 
 ## Ai làm bước nào
@@ -52,6 +52,9 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
   - `fullScopeAllowed: false`, để token không mang role của app khác.
   - Quyền admin của app là **client role của chính client đó** (ví dụ `odeku/admin`, nằm ở claim
     `resource_access.<client>.roles`). Không dùng realm role `admin` chung.
+  - Người được quyền đó (Board, staff) vào qua **group** `<client>-staff` gắn client role (ví dụ group
+    `odeku-staff` → `odeku/admin`), không gán role thẳng cho user. Thêm/bớt staff = thêm/bớt thành viên group,
+    việc này chỉ Board làm.
   - Tắt `directAccessGrantsEnabled` (password grant), implicit flow và service account nếu không cần.
   - Redirect URI chỉ ghi domain prod, càng cụ thể càng tốt. Không thêm `localhost` vào client prod: test local
     bằng IdP giả, hoặc dùng client dev riêng.
@@ -62,7 +65,7 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 
 ```bash
 # Chạy trên MacbookServer. Mật khẩu admin đi qua stdin, không nằm trong argv (D-0015).
-cd ~/Workspace/OSS/keycloak
+cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
 KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
   | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
@@ -119,7 +122,7 @@ KEYCLOAK_JWKS_URL=https://auth.hoang.jp/realms/hoang/protocol/openid-connect/cer
 
 ## Bước 4: Cập nhật danh sách client
 
-Thêm 1 dòng vào bảng `Realm: hoang` trong `~/Workspace/OSS/keycloak/docs/CLIENTS.md` trên Mac. Chỉ thêm dòng
+Thêm 1 dòng vào bảng `Realm: hoang` trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên Mac. Chỉ thêm dòng
 bằng script, không in cả file. Không ghi secret vào file này.
 
 ## Bước 5: Kiểm thử
