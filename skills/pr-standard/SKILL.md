@@ -41,6 +41,7 @@ Phút GitHub Actions của repo private là tiền. Build, test, plan, deploy ch
 - Job build, test, lint, `verify.sh`, `terraform plan`, deploy: `runs-on: [self-hosted, win-dev]`.
 - Chỉ job báo tin (Telegram, comment) được để `runs-on: ubuntu-latest`, và phải nhẹ: không `npm ci`, không build, `timeout-minutes` ≤ 5.
 - Service container (vd DynamoDB Local) dùng cổng do Docker chọn (`ports: ["8000"]`), đọc lại bằng `${{ job.services.<tên>.ports['8000'] }}` ở `env` của step, để nhiều runner chạy song song.
+- Runner `win-dev` không có sẵn công cụ như máy GitHub (Node hệ thống là v12): job cần runtime thì tự cài bằng action (`actions/setup-node`, `hashicorp/setup-terraform`…). Có sẵn: git, docker, aws, gh, jq, zip, python3.
 - Runner giữ workspace giữa các lần chạy: không giả định thư mục sạch; dọn file tạm trong `$RUNNER_TEMP`.
 - Repo chưa có runner `win-dev`: workflow mới vẫn viết `self-hosted`, và báo Board đăng ký runner (`~/Workspace/LanServer/ci-runner/register.sh owner/repo N` trên MacbookServer). Không tự đổi sang `ubuntu-latest` cho chạy được.
 - Không thêm trigger chạy định kỳ (`schedule`) hay ma trận lớn khi Board chưa đồng ý.
