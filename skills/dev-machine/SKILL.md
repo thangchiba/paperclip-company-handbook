@@ -18,9 +18,9 @@ Clone, build, test, Docker and `scripts/verify.sh` run here and only here (`secu
 2. Work under `~/workspace/<project>` on the WSL filesystem, not `/mnt/c`. If the repo is there, `git fetch && git pull` instead of cloning again. Touch only the task's project folder.
 3. Docker: use the local engine; never set `DOCKER_HOST` to an `ssh://` host. If `docker compose version` fails ("could not be found in this WSL 2 distro" means the WSL integration is off), report it on the task as an environment problem.
 
-## Images for the Mac
+## Images for prod
 
-Odeku prod is built on MacbookServer by its deploy webhook after a merge. Agents never push images there.
+Prod runs on ubuntu1 (192.168.1.97, amd64; D-0027), which builds its own images in its deploy webhook after a merge. Agents never push images there. MacbookServer is no longer prod.
 
 ## Disk
 

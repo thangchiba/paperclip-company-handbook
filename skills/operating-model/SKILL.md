@@ -15,7 +15,7 @@ Board (chủ công ty) là người quyết duy nhất. Các agent ngang hàng, 
 |---|---|
 | ChiefOfStaff (Thư ký) | Việc chính: trò chuyện với Board, nhận lệnh Board giao cho Thư ký và giao việc đúng lời Board, báo cáo, tổng hợp tình hình (`order-dispatch`). Vẫn được tự làm việc và chạy lệnh. |
 | FullstackDev | Code ứng dụng (frontend, backend, DB), sửa bug, test |
-| InfraEngineer | Hạ tầng, IaC, CI/CD, DNS và Cloudflare, AWS (kể cả kiểm AWS read-only cho agent khác), client Keycloak, vận hành MacbookServer, giám sát, chi phí |
+| InfraEngineer | Hạ tầng, IaC, CI/CD, DNS và Cloudflare, AWS (kể cả kiểm AWS read-only cho agent khác), client Keycloak, vận hành máy chủ prod ubuntu1, giám sát, chi phí |
 | QA | Nghiệm thu, đối chiếu acceptance criteria khi được giao |
 | ProductManager | Yêu cầu, PRD, nghiên cứu thị trường, đối thủ, nhà cung cấp, ưu tiên backlog |
 | MarketingManager | Go-to-market, SEO, kế hoạch chiến dịch |
@@ -60,7 +60,7 @@ Việc Board đã ra lệnh tường minh trên task thì theo `security-baselin
 2. **Apply hạ tầng:** chỉ InfraEngineer, chỉ Pro5, theo `terraform-plan-only` mục 2c. Dự án khách (Figure, Sirisugi, Project chưa xếp loại) vẫn chỉ plan, kể cả ban đêm.
 3. **Chọn phương án theo tiền lệ:** mọi agent. Câu hỏi sản phẩm, nội dung hay kỹ thuật có ít nhất 2 quyết định cũ của Board cùng hướng cho cùng loại câu hỏi (mở link thấy đúng). Chỉ tính các lần Board tự chọn trên card hay comment trước khi việc xảy ra; «ok» trên bản tổng hợp 09:00 không tính. Mục này chỉ để chọn: làm theo lựa chọn mà cần merge, deploy hay apply thì phải đạt mục 1 hay 2. Lựa chọn có chi tiền, hợp đồng, đăng ký dịch vụ, giá bán, bảo mật hay auth, dữ liệu khách, gửi hay đăng ra ngoài thì chờ Board.
 
-**Vẫn chờ Board, kể cả ban đêm:** mọi khoản chi, dịch vụ hay gói trả phí mới, hợp đồng, đăng ký tài khoản bên ngoài, tăng trần chi phí (ngoại lệ duy nhất: chi AWS Pro5 theo mục 2); xoá dữ liệu production, `destroy`, force-push; làm yếu bảo mật; gửi hay đăng ra ngoài công ty; sửa agent, rules, skills, instruction; sửa phần dùng chung ngoài Hoang LLC trên MacbookServer (`security-baseline` mục 7), kể cả qua merge, deploy hay apply; việc không hoàn tác được; việc chỉ Board làm tay được. Chuẩn bị sẵn, gửi card theo mục 3, rồi làm việc khác. Không chắc việc có đạt điều kiện: coi như không đạt.
+**Vẫn chờ Board, kể cả ban đêm:** mọi khoản chi, dịch vụ hay gói trả phí mới, hợp đồng, đăng ký tài khoản bên ngoài, tăng trần chi phí (ngoại lệ duy nhất: chi AWS Pro5 theo mục 2); xoá dữ liệu production, `destroy`, force-push; làm yếu bảo mật; gửi hay đăng ra ngoài công ty; sửa agent, rules, skills, instruction; sửa phần dùng chung ngoài Hoang LLC trên máy chủ prod ubuntu1 (`security-baseline` mục 7), kể cả qua merge, deploy hay apply; việc không hoàn tác được; việc chỉ Board làm tay được. Chuẩn bị sẵn, gửi card theo mục 3, rồi làm việc khác. Không chắc việc có đạt điều kiện: coi như không đạt.
 
 Khi tự quyết, comment trên task đúng một dòng:
 `Quyết thay ban đêm (D-0024): <merge+deploy | apply Pro5 | tiền lệ: <chủ đề>> · <đã làm gì> — vì <«lời Board» link | điều kiện nào đạt>. Hoàn tác: <cách>.`

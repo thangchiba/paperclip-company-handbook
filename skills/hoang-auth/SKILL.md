@@ -5,9 +5,9 @@ description: Tích hợp đăng nhập Hoang Auth (Keycloak SSO tại auth.hoang
 
 # hoang-auth — Tích hợp Hoang Auth (Keycloak SSO)
 
-Nguồn: skill `integrate-auth` của Board trên MacbookServer (`~/.claude/commands/integrate-auth.md`) và bộ docs
+Nguồn: skill `integrate-auth` của Board trên máy Mac của Board (`~/.claude/commands/integrate-auth.md`) và bộ docs
 `~/Workspace/Hoang/auth/docs/`, chép lên đây đã bỏ secret (D-0018, HOA-316). Secret, mật khẩu test và danh sách
-client chỉ nằm trên Mac.
+client chỉ nằm trên máy chủ prod ubuntu1 (D-0027).
 
 Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự án một client riêng**, không tự làm auth.
 
@@ -20,14 +20,14 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 | Issuer | `https://auth.hoang.jp/realms/hoang` |
 | Discovery | `https://auth.hoang.jp/realms/hoang/.well-known/openid-configuration` |
 | JWKS | `https://auth.hoang.jp/realms/hoang/protocol/openid-connect/certs` |
-| Chạy ở | MacbookServer, Docker Compose (`~/Workspace/Hoang/auth`), cổng local `26201` |
-| Credential admin | `~/Workspace/Hoang/auth/.env` trên Mac. Chỉ dùng trong lệnh, không in, không chép ra khỏi Mac |
-| Danh sách client | `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên Mac. **File có secret: không `cat` cả file** |
+| Chạy ở | Máy chủ prod ubuntu1 (192.168.1.97, D-0027), Docker Compose (`~/Workspace/Hoang/auth`), cổng local `26201` |
+| Credential admin | `~/Workspace/Hoang/auth/.env` trên ubuntu1. Chỉ dùng trong lệnh, không in, không chép ra khỏi máy chủ |
+| Danh sách client | `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên ubuntu1. **File có secret: không `cat` cả file** |
 | Docs tích hợp | `references/` cạnh file này: `INTEGRATION.md` (tổng quan), `INTEGRATION-BACKEND.md`, `INTEGRATION-FRONTEND.md` |
 
 ## Ai làm bước nào
 
-- **Tạo hoặc sửa client (bước 1, 4, 5.2):** InfraEngineer, qua SSH vào MacbookServer (`security-baseline` mục 7).
+- **Tạo hoặc sửa client (bước 1, 4, 5.2):** InfraEngineer, qua SSH vào ubuntu1 (`security-baseline` mục 7).
   Agent khác cần client thì tạo task cho InfraEngineer, ghi rõ: tên client, kiểu app (SPA hay backend tự làm OIDC),
   domain prod, redirect URI, role cần có.
 - **Tích hợp code (bước 2–3):** agent dev của dự án.
@@ -64,7 +64,7 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 - **Cách tạo:** viết file JSON rồi Partial import với `ifResourceExists: FAIL`. Client đã có thì nhận 409, không ghi đè gì.
 
 ```bash
-# Chạy trên MacbookServer. Mật khẩu admin đi qua stdin, không nằm trong argv (D-0015).
+# Chạy trên ubuntu1. Mật khẩu admin đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
 KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
@@ -122,14 +122,14 @@ KEYCLOAK_JWKS_URL=https://auth.hoang.jp/realms/hoang/protocol/openid-connect/cer
 
 ## Bước 4: Cập nhật danh sách client
 
-Thêm 1 dòng vào bảng `Realm: hoang` trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên Mac. Chỉ thêm dòng
+Thêm 1 dòng vào bảng `Realm: hoang` trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên ubuntu1. Chỉ thêm dòng
 bằng script, không in cả file. Không ghi secret vào file này.
 
 ## Bước 5: Kiểm thử
 
 1. Mở URL auth với PKCE: phải hiện trang đăng nhập Hoang Auth, không phải `Client not found`.
    Redirect URI lạ phải bị từ chối (400 `Invalid parameter: redirect_uri`).
-2. Xem token mẫu mà không cần đăng nhập (trên Mac):
+2. Xem token mẫu mà không cần đăng nhập (trên ubuntu1):
    `GET /admin/realms/hoang/clients/<uuid>/evaluate-scopes/generate-example-access-token?scope=openid&userId=<user-id>`.
    Kiểm `aud`, `azp`, role, và không có role của app khác.
 3. Đăng nhập thật trên trình duyệt với một tài khoản đã có trong realm.

@@ -21,7 +21,7 @@ Việc cần Board chỉ `done` sau khi Board đồng ý và hành động sau �
 
 ## 3. Ai quyết
 
-`security-baseline`: mục 1 (danh sách việc Board quyết), mục 5 (merge, PR cho Board), mục 6 (hạ tầng), mục 7 (MacbookServer). Ngoài danh sách đó agent tự quyết và báo cáo (D-0001).
+`security-baseline`: mục 1 (danh sách việc Board quyết), mục 5 (merge, PR cho Board), mục 6 (hạ tầng), mục 7 (máy chủ prod ubuntu1). Ngoài danh sách đó agent tự quyết và báo cáo (D-0001).
 
 ## 4. Secret, dữ liệu khách, nơi chạy code
 

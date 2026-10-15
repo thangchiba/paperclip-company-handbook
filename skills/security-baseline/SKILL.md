@@ -1,6 +1,6 @@
 ---
 name: security-baseline
-description: Quy tắc an toàn mọi agent Hoang LLC tự nắm và tự áp dụng - việc nào chỉ Board quyết (việc quan trọng), code chạy ở đâu, AWS, secret, merge và PR cho Board, hạ tầng (Pro5 dưới $30/tháng), SSH vào MacbookServer, NDA, gửi ra ngoài, chi tiền, sự cố. Dùng trước mọi lệnh có thay đổi, merge, deploy, apply, SSH, đăng hoặc gửi ra ngoài, chi tiền, và khi chưa chắc việc sắp làm có cần Board không.
+description: Quy tắc an toàn mọi agent Hoang LLC tự nắm và tự áp dụng - việc nào chỉ Board quyết (việc quan trọng), code chạy ở đâu, AWS, secret, merge và PR cho Board, hạ tầng (Pro5 dưới $30/tháng), SSH vào máy chủ prod ubuntu1, NDA, gửi ra ngoài, chi tiền, sự cố. Dùng trước mọi lệnh có thay đổi, merge, deploy, apply, SSH, đăng hoặc gửi ra ngoài, chi tiền, và khi chưa chắc việc sắp làm có cần Board không.
 ---
 
 # security-baseline
@@ -15,7 +15,7 @@ Mọi agent tự áp dụng. Chỉ Board quyết; không agent nào duyệt thay
 - Dữ liệu production; production và hạ tầng ngoài phần mục 5–6 cho tự làm.
 - Việc không hoàn tác được: xoá dữ liệu, force-push, đóng Project.
 - Đăng công khai, gửi khách hàng, email hay tin nhắn ra ngoài công ty (mục 9).
-- Sửa phần dùng chung ngoài Hoang LLC trên MacbookServer (mục 7).
+- Sửa phần dùng chung ngoài Hoang LLC trên máy chủ prod ubuntu1 (mục 7).
 - Tuyển, đổi vai, tắt agent; sửa rules, skills, instruction agent.
 - Trả lời, chấp nhận, từ chối card hỏi Board.
 
@@ -32,8 +32,8 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 
 - Clone, code, build, test, Docker, `scripts/verify.sh`: chỉ trên ThangChiba-Desktop (WSL2 Ubuntu), máy run của agent đang chạy (`dev-machine`).
 - Trước lệnh chạy code đầu tiên của run: `hostname`. Khác `ThangChiba-Desktop` thì dừng, báo trên task.
-- Không chạy code, build, test hay `verify.sh` của dự án trên MacbookServer, kể cả khi runbook cũ ghi vậy. Desktop thiếu công cụ thì báo Board trên task (vấn đề môi trường), không chuyển sang Mac.
-- Mac là arm64, Desktop là amd64: không đưa image amd64 lên Mac.
+- Không chạy code, build, test hay `verify.sh` của dự án trên máy chủ prod ubuntu1, kể cả khi runbook cũ ghi vậy. Desktop thiếu công cụ thì báo Board trên task (vấn đề môi trường), không chuyển sang máy chủ.
+- MacbookServer (192.168.1.95) không còn là prod từ 2026-10-15 (D-0027): không SSH, không deploy, không sửa gì trên đó. Runbook còn ghi MacbookServer hay 192.168.1.95 thì hiểu là ubuntu1.
 
 ## 3. AWS (D-0012, D-0017)
 
@@ -68,10 +68,10 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
   - đụng tài nguyên của dự án khác.
 
 - Ban đêm (D-0024): Pro5 theo `terraform-plan-only` mục 2c; dự án khách vẫn chỉ plan.
-## 7. MacbookServer (D-0018)
+## 7. Máy chủ prod ubuntu1 (D-0018, D-0027)
 
-- **InfraEngineer, FullstackDev và ChiefOfStaff được SSH vào** (Board, 2026-10-02). Agent khác cần gì trên Mac thì tạo task con cho một trong ba.
-- Key `~/.ssh/id_ed25519_cto_macbookserver`, kèm `-o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes`. Lệnh đầu tiên `hostname` phải ra `MacbookServer.local`.
+- **InfraEngineer, FullstackDev và ChiefOfStaff được SSH vào** (Board, 2026-10-02). Agent khác cần gì trên máy chủ thì tạo task con cho một trong ba.
+- `ssh thangchiba@192.168.1.97` (Ubuntu 26.04, amd64). Key `~/.ssh/id_ed25519_cto_macbookserver` (tên cũ, giữ nguyên), kèm `-o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes`. Lệnh đầu tiên `hostname` phải ra `ubuntu1`.
 - Tự chạy: lệnh chỉ đọc, và lệnh phục vụ dự án của Hoang LLC (vận hành, log, kiểm tra; không build hay test, mục 2).
 - Hỏi Board trước khi sửa phần dùng chung ngoài Hoang LLC:
   - realm `hoang` và các IdP Google, GitHub;
@@ -79,7 +79,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
   - Paperclip;
   - crontab dùng chung;
   - file cá nhân của Board.
-- Chỉ đọc những gì task cần. Secret chỉ dùng ngay trong lệnh: không in, không chép ra khỏi Mac. Không dùng profile AWS trên host.
+- Chỉ đọc những gì task cần. Secret chỉ dùng ngay trong lệnh: không in, không chép ra khỏi máy chủ. Không dùng profile AWS trên host.
 - Paperclip là của Board: không đọc key hay secret của nó (`secrets/` của instance, env của board, `docker/.env`), không kết nối thẳng `paperclip-db` hay mở volume của nó, không đọc dữ liệu công ty khác. Chỉ dùng Paperclip qua API bằng key của run; agent đọc được key hay DB của board thì card `human_only` không còn chặn được agent.
 
 ## 8. Dữ liệu và NDA (D-0004)
@@ -105,7 +105,7 @@ Lời Board (HOA-236): «Lần sau task nào làm đc thì tự làm, trừ ản
 ## Checklist trước lệnh có thay đổi
 
 - [ ] Việc thuộc mục 1? Có thì đã có card Board chấp nhận, lệnh tường minh của Board có link, hoặc chế độ ban đêm đang bật (`TZ=Asia/Tokyo date`, HOA-395) và việc đạt đủ điều kiện `operating-model` mục 1b.
-- [ ] Đúng máy: `ThangChiba-Desktop` cho code; `MacbookServer.local` chỉ cho việc ở mục 7.
+- [ ] Đúng máy: `ThangChiba-Desktop` cho code; `ubuntu1` chỉ cho việc ở mục 7.
 - [ ] Lệnh không in secret, env hay argv.
 - [ ] Đúng Project của task.
 - [ ] Biết cách hoàn tác, và sẽ ghi bằng chứng.

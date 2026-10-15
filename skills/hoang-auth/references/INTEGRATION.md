@@ -28,7 +28,7 @@ Mỗi app cần 1 client riêng. Có 2 cách:
 ### Cách A: Qua Admin REST API (recommended cho AI)
 
 ```bash
-# 1. Lấy admin token (chạy trên MacbookServer). Mật khẩu đi qua stdin, không nằm trong argv (D-0015).
+# 1. Lấy admin token (chạy trên ubuntu1, 192.168.1.97). Mật khẩu đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
 KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
@@ -103,7 +103,7 @@ Ví dụ: diagram-editor, note-app, chat-app, excalidraw
 
 ### Sau khi tạo xong, cập nhật CLIENTS.md
 
-Thêm 1 dòng vào bảng trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên MacbookServer (file có secret: chỉ thêm dòng, không `cat` cả file, không chép ra ngoài).
+Thêm 1 dòng vào bảng trong `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên ubuntu1 (file có secret: chỉ thêm dòng, không `cat` cả file, không chép ra ngoài).
 
 ---
 
