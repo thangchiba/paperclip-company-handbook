@@ -62,7 +62,7 @@ printf '%s\n' "$d" | grep -inE '(password|passwd|secret|token|api_key|private_ke
   `pgrep -f <pattern> >/dev/null && echo running`.
 - Quét secret trong file/log: chỉ in **số đếm hoặc true/false**, không in đoạn khớp hay ngữ cảnh quanh nó; bỏ qua
   kho credential (`~/.claude/.credentials.json`, `~/.ssh`, `~/.aws`). So khớp bằng giá trị đọc từ env bên trong
-  script (Python, hoặc `grep -F -f <(printf '%s' "$VAR")`), không đưa giá trị secret vào argv của `grep`/`curl`.
+  script (Python, hoặc `grep -F -f <(printf '%s' "$VAR")`), không đưa giá trị secret vào argv của `grep` hay của lệnh gọi HTTP.
 - Khi in file cấu hình, connection string, header HTTP hay output `docker compose config`: mask trước
   (`sed -E 's#(://[^:@/]+:)[^@]+@#\1<masked>@#g'`).
 - Comment/document trên Paperclip chỉ ghi **tên** biến, path của secret file, incident id — không bao giờ ghi giá trị.

@@ -67,7 +67,7 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 # Chạy trên ubuntu1. Mật khẩu admin đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
-KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
+KC_ACCESS=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
   | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
       -d "grant_type=password" -d "client_id=admin-cli" \
       --data-urlencode "username=$(kcenv KC_ADMIN_USER)" \
@@ -76,7 +76,7 @@ KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
 
 # clients.json: {"ifResourceExists": "FAIL", "clients": [...], "roles": {"client": {"<client>": [...]}}}
 curl -s -X POST "http://localhost:26201/admin/realms/hoang/partialImport" \
-  -H "Authorization: Bearer $KC_TOKEN" -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $KC_ACCESS" -H "Content-Type: application/json" \
   --data @clients.json
 ```
 

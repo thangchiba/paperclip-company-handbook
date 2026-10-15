@@ -31,7 +31,7 @@ Mỗi app cần 1 client riêng. Có 2 cách:
 # 1. Lấy admin token (chạy trên ubuntu1, 192.168.1.97). Mật khẩu đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
-KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
+KC_ACCESS=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
   | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
       -d "grant_type=password" -d "client_id=admin-cli" \
       --data-urlencode "username=$(kcenv KC_ADMIN_USER)" \
@@ -40,7 +40,7 @@ KC_TOKEN=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
 
 # 2a. Tạo PUBLIC client (cho SPA frontend)
 curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
-  -H "Authorization: Bearer $KC_TOKEN" \
+  -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{
     "clientId": "<APP_CLIENT_ID>",
@@ -60,7 +60,7 @@ curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
 
 # 2b. Tạo CONFIDENTIAL client (cho backend có server-side)
 curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
-  -H "Authorization: Bearer $KC_TOKEN" \
+  -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{
     "clientId": "<APP_CLIENT_ID>",
@@ -81,9 +81,9 @@ curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
 
 # 3. Lấy client secret (chỉ cho confidential client)
 CLIENT_UUID=$(curl -s "http://localhost:26201/admin/realms/hoang/clients?clientId=<APP_CLIENT_ID>" \
-  -H "Authorization: Bearer $KC_TOKEN" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['id'])")
+  -H "Authorization: Bearer $KC_ACCESS" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['id'])")
 curl -s "http://localhost:26201/admin/realms/hoang/clients/$CLIENT_UUID/client-secret" \
-  -H "Authorization: Bearer $KC_TOKEN" | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])"
+  -H "Authorization: Bearer $KC_ACCESS" | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])"
 ```
 
 ### Cách B: Qua Admin Console UI
@@ -354,17 +354,17 @@ Backend KHÔNG làm gì về refresh:
 > Đây là cấu hình chung của realm `hoang`: phải hỏi Board trước khi đổi (D-0018).
 
 ```bash
-# Biến KC_TOKEN lấy như Bước 1, Cách A
+# Biến KC_ACCESS lấy như Bước 1, Cách A
 
 # Đổi access_token lifespan (ví dụ: 15 phút = 900 giây)
 curl -s -X PUT "http://localhost:26201/admin/realms/hoang" \
-  -H "Authorization: Bearer $KC_TOKEN" \
+  -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{"accessTokenLifespan": 900}'
 
 # Đổi SSO session idle timeout (ví dụ: 2 giờ)
 curl -s -X PUT "http://localhost:26201/admin/realms/hoang" \
-  -H "Authorization: Bearer $KC_TOKEN" \
+  -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{"ssoSessionIdleTimeout": 7200}'
 ```
