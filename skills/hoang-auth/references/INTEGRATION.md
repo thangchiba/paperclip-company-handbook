@@ -28,18 +28,18 @@ Mỗi app cần 1 client riêng. Có 2 cách:
 ### Cách A: Qua Admin REST API (recommended cho AI)
 
 ```bash
-# 1. Lấy admin token (chạy trên ubuntu1, 192.168.1.97). Mật khẩu đi qua stdin, không nằm trong argv (D-0015).
+# 1. Lấy token của client hoang-agent-ops (chạy trên ubuntu1, 192.168.1.97; Admin REST chỉ mở cho IP nhà, D-0020).
+#    Service account chỉ quản trị realm hoang (HOA-771). Secret đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
-KC_ACCESS=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
-  | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
-      -d "grant_type=password" -d "client_id=admin-cli" \
-      --data-urlencode "username=$(kcenv KC_ADMIN_USER)" \
-      --data-urlencode "password@-" \
+KC_ACCESS=$(kcenv KC_AGENT_CLIENT_SECRET | tr -d '\n' \
+  | curl -s -X POST "https://auth.hoang.jp/realms/hoang/protocol/openid-connect/token" \
+      -d "grant_type=client_credentials" --data-urlencode "client_id=$(kcenv KC_AGENT_CLIENT_ID)" \
+      --data-urlencode "client_secret@-" \
   | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
 
 # 2a. Tạo PUBLIC client (cho SPA frontend)
-curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
+curl -s -X POST "https://auth.hoang.jp/admin/realms/hoang/clients" \
   -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{
@@ -59,7 +59,7 @@ curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
   }'
 
 # 2b. Tạo CONFIDENTIAL client (cho backend có server-side)
-curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
+curl -s -X POST "https://auth.hoang.jp/admin/realms/hoang/clients" \
   -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{
@@ -80,9 +80,9 @@ curl -s -X POST "http://localhost:26201/admin/realms/hoang/clients" \
   }'
 
 # 3. Lấy client secret (chỉ cho confidential client)
-CLIENT_UUID=$(curl -s "http://localhost:26201/admin/realms/hoang/clients?clientId=<APP_CLIENT_ID>" \
+CLIENT_UUID=$(curl -s "https://auth.hoang.jp/admin/realms/hoang/clients?clientId=<APP_CLIENT_ID>" \
   -H "Authorization: Bearer $KC_ACCESS" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['id'])")
-curl -s "http://localhost:26201/admin/realms/hoang/clients/$CLIENT_UUID/client-secret" \
+curl -s "https://auth.hoang.jp/admin/realms/hoang/clients/$CLIENT_UUID/client-secret" \
   -H "Authorization: Bearer $KC_ACCESS" | python3 -c "import sys,json; print(json.load(sys.stdin)['value'])"
 ```
 
@@ -357,13 +357,13 @@ Backend KHÔNG làm gì về refresh:
 # Biến KC_ACCESS lấy như Bước 1, Cách A
 
 # Đổi access_token lifespan (ví dụ: 15 phút = 900 giây)
-curl -s -X PUT "http://localhost:26201/admin/realms/hoang" \
+curl -s -X PUT "https://auth.hoang.jp/admin/realms/hoang" \
   -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{"accessTokenLifespan": 900}'
 
 # Đổi SSO session idle timeout (ví dụ: 2 giờ)
-curl -s -X PUT "http://localhost:26201/admin/realms/hoang" \
+curl -s -X PUT "https://auth.hoang.jp/admin/realms/hoang" \
   -H "Authorization: Bearer $KC_ACCESS" \
   -H "Content-Type: application/json" \
   -d '{"ssoSessionIdleTimeout": 7200}'
