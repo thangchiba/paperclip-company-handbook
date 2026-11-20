@@ -20,8 +20,8 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 | Issuer | `https://auth.hoang.jp/realms/hoang` |
 | Discovery | `https://auth.hoang.jp/realms/hoang/.well-known/openid-configuration` |
 | JWKS | `https://auth.hoang.jp/realms/hoang/protocol/openid-connect/certs` |
-| Chạy ở | Máy chủ prod ubuntu1 (192.168.1.97, D-0027), Docker Compose (`~/Workspace/Hoang/auth`), cổng local `26201` |
-| Credential admin | `~/Workspace/Hoang/auth/.env` trên ubuntu1. Chỉ dùng trong lệnh, không in, không chép ra khỏi máy chủ |
+| Chạy ở | Máy AWS Lightsail `hoang-auth` (account `hoang-apps`, Tokyo) từ 12/11/2026 (HOA-771), qua Cloudflare Tunnel. Không còn chạy trên ubuntu1. Repo private `thangchiba/hoang-auth`, xem `deploy/lightsail/README.md` |
+| Credential admin | Client `hoang-agent-ops` (service account): chỉ quản trị realm `hoang`, không vào realm `master`, không sửa user, không tạo group. Secret `KC_AGENT_CLIENT_ID` / `KC_AGENT_CLIENT_SECRET` trong `~/Workspace/Hoang/auth/.env` trên ubuntu1. Chỉ dùng trong lệnh, không in, không chép ra khỏi máy chủ. User `admin` của realm `master` đã tắt (HOA-771) |
 | Danh sách client | `~/Workspace/Hoang/auth/docs/CLIENTS.md` trên ubuntu1. **File có secret: không `cat` cả file** |
 | Docs tích hợp | `references/` cạnh file này: `INTEGRATION.md` (tổng quan), `INTEGRATION-BACKEND.md`, `INTEGRATION-FRONTEND.md` |
 
@@ -54,7 +54,7 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
     `resource_access.<client>.roles`). Không dùng realm role `admin` chung.
   - Người được quyền đó (Board, staff) vào qua **group** `<client>-staff` gắn client role (ví dụ group
     `odeku-staff` → `odeku/admin`), không gán role thẳng cho user. Thêm/bớt staff = thêm/bớt thành viên group,
-    việc này chỉ Board làm.
+    việc này chỉ Board làm. `hoang-agent-ops` không tạo được group (403): Board tạo group trên trang admin.
   - Tắt `directAccessGrantsEnabled` (password grant), implicit flow và service account nếu không cần.
   - Redirect URI chỉ ghi domain prod, càng cụ thể càng tốt. Không thêm `localhost` vào client prod: test local
     bằng IdP giả, hoặc dùng client dev riêng.
@@ -64,18 +64,17 @@ Theo D-0016: dự án cần đăng nhập thì dùng Hoang Auth, **mỗi dự á
 - **Cách tạo:** viết file JSON rồi Partial import với `ifResourceExists: FAIL`. Client đã có thì nhận 409, không ghi đè gì.
 
 ```bash
-# Chạy trên ubuntu1. Mật khẩu admin đi qua stdin, không nằm trong argv (D-0015).
+# Chạy trên ubuntu1 (Admin REST chỉ mở cho IP nhà, D-0020). Secret đi qua stdin, không nằm trong argv (D-0015).
 cd ~/Workspace/Hoang/auth
 kcenv() { grep "^$1=" .env | cut -d= -f2-; }   # đọc 1 biến trong .env, không in ra màn hình
-KC_ACCESS=$(kcenv KC_ADMIN_PASSWORD | tr -d '\n' \
-  | curl -s -X POST "http://localhost:26201/realms/master/protocol/openid-connect/token" \
-      -d "grant_type=password" -d "client_id=admin-cli" \
-      --data-urlencode "username=$(kcenv KC_ADMIN_USER)" \
-      --data-urlencode "password@-" \
+KC_ACCESS=$(kcenv KC_AGENT_CLIENT_SECRET | tr -d '\n' \
+  | curl -s -X POST "https://auth.hoang.jp/realms/hoang/protocol/openid-connect/token" \
+      -d "grant_type=client_credentials" --data-urlencode "client_id=$(kcenv KC_AGENT_CLIENT_ID)" \
+      --data-urlencode "client_secret@-" \
   | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
 
 # clients.json: {"ifResourceExists": "FAIL", "clients": [...], "roles": {"client": {"<client>": [...]}}}
-curl -s -X POST "http://localhost:26201/admin/realms/hoang/partialImport" \
+curl -s -X POST "https://auth.hoang.jp/admin/realms/hoang/partialImport" \
   -H "Authorization: Bearer $KC_ACCESS" -H "Content-Type: application/json" \
   --data @clients.json
 ```
